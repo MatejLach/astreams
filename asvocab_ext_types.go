@@ -26,6 +26,10 @@ type Page = Document
 // Extended 'Link' types
 type Mention = Link
 
+type Hashtag = Link
+
+type PropertyValue = Link
+
 type Place struct {
 	Location
 	Accuracy float32 `json:"accuracy,omitempty"`

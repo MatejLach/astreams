@@ -26,6 +26,10 @@ type Page = Document
 // Extended 'Link' types
 type Mention = Link
 
+type Hashtag = Link
+
+type PropertyValue = Link
+
 type Place struct {
 	Location
 	Accuracy float32 `json:"accuracy,omitempty"`
@@ -48,6 +52,12 @@ type Relationship struct {
 	Subject            *ObjectOrLinkOrString `json:"subject,omitempty"`
 	Relationship       string                `json:"relationship,omitempty"`
 	RelationshipObject *ObjectOrLinkOrString `json:"object"`
+}
+
+type PublicKey struct {
+	ID           string `json:"id"`
+	Owner        string `json:"owner"`
+	PublicKeyPem string `json:"publicKeyPem"`
 }
 
 // Extended 'Actor' types

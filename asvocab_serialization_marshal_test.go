@@ -2,7 +2,6 @@ package astreams
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 	"testing"
 )
@@ -90,8 +89,7 @@ func TestMarshalJSON_Collection(t *testing.T) {
 			t.Fatal(err)
 		}
 		if string(got) != strings.TrimSpace(want[idx]) {
-			fmt.Println(string(got))
-			t.Fatal("marshaled Collection JSON not as expected")
+			t.Fatalf("marshaled Collection JSON not as expected, wanted '%s', got '%s'", strings.TrimSpace(want[idx]), string(got))
 		}
 	}
 }

@@ -54,6 +54,12 @@ type Relationship struct {
 	RelationshipObject *ObjectOrLinkOrString `json:"object"`
 }
 
+type PublicKey struct {
+	ID           string `json:"id"`
+	Owner        string `json:"owner"`
+	PublicKeyPem string `json:"publicKeyPem"`
+}
+
 // Extended 'Actor' types
 type Application = Actor
 

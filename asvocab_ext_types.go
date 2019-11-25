@@ -55,6 +55,7 @@ type Relationship struct {
 }
 
 type PublicKey struct {
+	Object
 	ID           string `json:"id"`
 	Owner        string `json:"owner"`
 	PublicKeyPem string `json:"publicKeyPem"`

@@ -341,6 +341,12 @@ func decodeASType(data []byte, jsonType string) (Targeter, error) {
 			return nil, err
 		}
 		return Targeter(propertyValue), nil
+	case "publicKey":
+		publicKey := PublicKey{}
+		if err := decoder.Decode(&publicKey); err != nil {
+			return nil, err
+		}
+		return Targeter(publicKey), nil
 	}
 	return nil, errors.New("unsupported ActivityStreams type, or invalid AS document")
 }

@@ -11,11 +11,11 @@ import (
 // Implements https://golang.org/pkg/encoding/json/#Unmarshaler
 func (ol *ObjectOrLink) UnmarshalJSON(data []byte) error {
 	if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'['}) {
-		var rawJsonArr []json.RawMessage
-		if err := json.Unmarshal(data, &rawJsonArr); err != nil {
+		var rawJSONSlice []json.RawMessage
+		if err := json.Unmarshal(data, &rawJSONSlice); err != nil {
 			return err
 		}
-		for _, jsonObj := range rawJsonArr {
+		for _, jsonObj := range rawJSONSlice {
 			rawJsonMap := make(map[string]interface{})
 			if err := json.Unmarshal(jsonObj, &rawJsonMap); err != nil {
 				return err
@@ -44,6 +44,12 @@ func (ol *ObjectOrLink) UnmarshalJSON(data []byte) error {
 				*ol = append(*ol, astype)
 			}
 		}
+		// assuming a generic Object if there's not a more specific type
+		asObject := Object{}
+		if err := json.Unmarshal(data, &asObject); err != nil {
+			return err
+		}
+		*ol = append(*ol, Targeter(asObject))
 	}
 	return nil
 }

@@ -51,6 +51,8 @@ type Object struct {
 	ID                        string                `json:"id,omitempty"`
 	Name                      string                `json:"name,omitempty"`
 	NameMap                   map[string]string     `json:"nameMap,omitempty"`
+	AlsoKnownAs               *ObjectOrLinkOrString `json:"alsoKnownAs,omitempty"`
+	MovedTo                   *ObjectOrLinkOrString `json:"movedTo,omitempty"`
 	Attachment                *ObjectOrLinkOrString `json:"attachment,omitempty"`
 	AttributedTo              *ObjectOrLinkOrString `json:"attributedTo,omitempty"`
 	Audience                  *ObjectOrLinkOrString `json:"audience,omitempty"`

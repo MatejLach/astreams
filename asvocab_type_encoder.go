@@ -495,6 +495,24 @@ func encodeASType(t Targeter) ([]byte, error) {
 			return marshalB, nil
 		}
 		return []byte{}, fmt.Errorf("failed to Marshal %s", datatType)
+	case "Hashtag":
+		if hashtag, ok := t.(Hashtag); ok {
+			marshalB, err := json.Marshal(hashtag)
+			if err != nil {
+				return []byte{}, err
+			}
+			return marshalB, nil
+		}
+		return []byte{}, fmt.Errorf("failed to Marshal %s", datatType)
+	case "PropertyValue":
+		if propertyValue, ok := t.(Mention); ok {
+			marshalB, err := json.Marshal(propertyValue)
+			if err != nil {
+				return []byte{}, err
+			}
+			return marshalB, nil
+		}
+		return []byte{}, fmt.Errorf("failed to Marshal %s", datatType)
 	}
 	return []byte{}, errors.New("unsupported ActivityStreams type, or invalid AS document")
 }

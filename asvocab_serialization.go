@@ -43,13 +43,14 @@ func (ol *ObjectOrLink) UnmarshalJSON(data []byte) error {
 				}
 				*ol = append(*ol, astype)
 			}
+		} else {
+			// assuming a generic Object if there's not a more specific type
+			asObject := Object{}
+			if err := json.Unmarshal(data, &asObject); err != nil {
+				return err
+			}
+			*ol = append(*ol, Targeter(asObject))
 		}
-		// assuming a generic Object if there's not a more specific type
-		asObject := Object{}
-		if err := json.Unmarshal(data, &asObject); err != nil {
-			return err
-		}
-		*ol = append(*ol, Targeter(asObject))
 	}
 	return nil
 }
@@ -236,10 +237,15 @@ func (ols ObjectOrLinkOrString) MarshalJSON() ([]byte, error) {
 				return []byte{}, err
 			}
 		} else {
-			uri, err = json.Marshal(ols.URL)
-			if err != nil {
-				return []byte{}, err
+			var uris string
+			for idx, link := range ols.URL {
+				if idx < len(ols.URL)-1 {
+					uris += fmt.Sprintf("\"%s\",\n", link)
+				} else {
+					uris += fmt.Sprintf("\"%s\"\n", link)
+				}
 			}
+			uri = bytes.NewBufferString(uris).Bytes()
 		}
 		if len(ols.Target) == 1 {
 			target, err = json.Marshal(ols.Target[0])

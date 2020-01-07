@@ -43,45 +43,47 @@ type Endpoints struct {
 // Object represents the base ActivityStreams Object and all of its properties
 // Most of the other types extend Object
 type Object struct {
-	ASContext                 *ObjectOrLinkOrString `json:"@context,omitempty"`
-	ASLanguage                string                `json:"@language,omitempty"`
-	Type                      string                `json:"type"`
-	Summary                   string                `json:"summary,omitempty"`
-	SummaryMap                map[string]string     `json:"summaryMap,omitempty"`
-	ID                        string                `json:"id,omitempty"`
-	Name                      string                `json:"name,omitempty"`
-	NameMap                   map[string]string     `json:"nameMap,omitempty"`
-	AlsoKnownAs               *ObjectOrLinkOrString `json:"alsoKnownAs,omitempty"`
-	MovedTo                   *ObjectOrLinkOrString `json:"movedTo,omitempty"`
-	Attachment                *ObjectOrLinkOrString `json:"attachment,omitempty"`
-	AttributedTo              *ObjectOrLinkOrString `json:"attributedTo,omitempty"`
-	Audience                  *ObjectOrLinkOrString `json:"audience,omitempty"`
-	Content                   string                `json:"content,omitempty"` // needs to be parsed safely ie by https://golang.org/pkg/html/template
-	ContentMap                map[string]string     `json:"contentMap,omitempty"`
-	Source                    *ObjectOrLinkOrString `json:"source,omitempty"`
-	Context                   *ObjectOrLinkOrString `json:"context,omitempty"`
-	StartTime                 *time.Time            `json:"startTime,omitempty"`
-	EndTime                   *time.Time            `json:"endTime,omitempty"`
-	Generator                 *ObjectOrLinkOrString `json:"generator,omitempty"`
-	Featured                  *ObjectOrLinkOrString `json:"featured,omitempty"`
-	Icon                      *ObjectOrLinkOrString `json:"icon,omitempty"`
-	Image                     *ObjectOrLinkOrString `json:"image,omitempty"`
-	InReplyTo                 *ObjectOrLinkOrString `json:"inReplyTo,omitempty"`
-	Location                  *ObjectOrLinkOrString `json:"location,omitempty"`
-	Preview                   *ObjectOrLinkOrString `json:"preview,omitempty"`
-	Published                 *time.Time            `json:"published,omitempty"`
-	Replies                   *OrderedCollection    `json:"replies,omitempty"`
-	Tag                       *ObjectOrLinkOrString `json:"tag,omitempty"`
-	Updated                   *time.Time            `json:"updated,omitempty"`
-	URL                       *ObjectOrLinkOrString `json:"url,omitempty"`
-	To                        *ObjectOrLinkOrString `json:"to,omitempty"`
-	Bto                       *ObjectOrLinkOrString `json:"bto,omitempty"`
-	Cc                        *ObjectOrLinkOrString `json:"cc,omitempty"`
-	Bcc                       *ObjectOrLinkOrString `json:"bcc,omitempty"`
-	ManuallyApprovesFollowers bool                  `json:"manuallyApprovesFollowers,omitempty"`
-	MediaType                 string                `json:"mediaType,omitempty"`
-	Duration                  string                `json:"duration,omitempty"` // xsd:duration
-	PublicKey                 *PublicKey            `json:"publicKey,omitempty"`
+	ASContext    *ObjectOrLinkOrString `json:"@context,omitempty"`
+	ASLanguage   string                `json:"@language,omitempty"`
+	Schema       string                `json:"schema,omitempty"`
+	Type         string                `json:"type,omitempty"`
+	AtType       string                `json:"@type,omitempty"`
+	Summary      string                `json:"summary,omitempty"`
+	SummaryMap   map[string]string     `json:"summaryMap,omitempty"`
+	ID           string                `json:"id,omitempty"`
+	AtID         string                `json:"@id,omitempty"`
+	Name         string                `json:"name,omitempty"`
+	NameMap      map[string]string     `json:"nameMap,omitempty"`
+	AlsoKnownAs  *ObjectOrLinkOrString `json:"alsoKnownAs,omitempty"`
+	MovedTo      *ObjectOrLinkOrString `json:"movedTo,omitempty"`
+	Attachment   *ObjectOrLinkOrString `json:"attachment,omitempty"`
+	AttributedTo *ObjectOrLinkOrString `json:"attributedTo,omitempty"`
+	Audience     *ObjectOrLinkOrString `json:"audience,omitempty"`
+	Content      string                `json:"content,omitempty"` // needs to be parsed safely ie by https://golang.org/pkg/html/template
+	ContentMap   map[string]string     `json:"contentMap,omitempty"`
+	Source       *ObjectOrLinkOrString `json:"source,omitempty"`
+	Context      *ObjectOrLinkOrString `json:"context,omitempty"`
+	StartTime    *time.Time            `json:"startTime,omitempty"`
+	EndTime      *time.Time            `json:"endTime,omitempty"`
+	Generator    *ObjectOrLinkOrString `json:"generator,omitempty"`
+	Featured     *ObjectOrLinkOrString `json:"featured,omitempty"`
+	Icon         *ObjectOrLinkOrString `json:"icon,omitempty"`
+	Image        *ObjectOrLinkOrString `json:"image,omitempty"`
+	InReplyTo    *ObjectOrLinkOrString `json:"inReplyTo,omitempty"`
+	Location     *ObjectOrLinkOrString `json:"location,omitempty"`
+	Preview      *ObjectOrLinkOrString `json:"preview,omitempty"`
+	Published    *time.Time            `json:"published,omitempty"`
+	Replies      *OrderedCollection    `json:"replies,omitempty"`
+	Tag          *ObjectOrLinkOrString `json:"tag,omitempty"`
+	Updated      *time.Time            `json:"updated,omitempty"`
+	URL          *ObjectOrLinkOrString `json:"url,omitempty"`
+	To           *ObjectOrLinkOrString `json:"to,omitempty"`
+	Bto          *ObjectOrLinkOrString `json:"bto,omitempty"`
+	Cc           *ObjectOrLinkOrString `json:"cc,omitempty"`
+	Bcc          *ObjectOrLinkOrString `json:"bcc,omitempty"`
+	MediaType    string                `json:"mediaType,omitempty"`
+	Duration     string                `json:"duration,omitempty"` // xsd:duration
+	PublicKey    *PublicKey            `json:"publicKey,omitempty"`
 }
 
 // Link represents the base ActivityStreams Link and all of its properties
@@ -128,14 +130,15 @@ type Icon struct {
 
 type Actor struct {
 	Object
-	Inbox             *StringWithCollection `json:"inbox,omitempty"`
-	Outbox            *StringWithCollection `json:"outbox,omitempty"`
-	Followers         *StringWithCollection `json:"followers,omitempty"`
-	Following         *StringWithCollection `json:"following,omitempty"`
-	Liked             *StringWithCollection `json:"liked,omitempty"`
-	Streams           *ObjectOrLinkOrString `json:"streams,omitempty"`
-	PreferredUsername string                `json:"preferredUsername,omitempty"`
-	Endpoints         *Endpoints            `json:"endpoints,omitempty"`
+	Inbox                     *StringWithCollection `json:"inbox,omitempty"`
+	Outbox                    *StringWithCollection `json:"outbox,omitempty"`
+	Followers                 *StringWithCollection `json:"followers,omitempty"`
+	Following                 *StringWithCollection `json:"following,omitempty"`
+	Liked                     *StringWithCollection `json:"liked,omitempty"`
+	Streams                   *ObjectOrLinkOrString `json:"streams,omitempty"`
+	PreferredUsername         string                `json:"preferredUsername,omitempty"`
+	ManuallyApprovesFollowers bool                  `json:"manuallyApprovesFollowers,omitempty"`
+	Endpoints                 *Endpoints            `json:"endpoints,omitempty"`
 }
 
 type Activity struct {

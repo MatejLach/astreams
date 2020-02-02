@@ -130,15 +130,15 @@ type Icon struct {
 
 type Actor struct {
 	Object
-	Inbox                     *StringWithCollection `json:"inbox,omitempty"`
-	Outbox                    *StringWithCollection `json:"outbox,omitempty"`
-	Followers                 *StringWithCollection `json:"followers,omitempty"`
-	Following                 *StringWithCollection `json:"following,omitempty"`
-	Liked                     *StringWithCollection `json:"liked,omitempty"`
-	Streams                   *ObjectOrLinkOrString `json:"streams,omitempty"`
-	PreferredUsername         string                `json:"preferredUsername,omitempty"`
-	ManuallyApprovesFollowers bool                  `json:"manuallyApprovesFollowers,omitempty"`
-	Endpoints                 *Endpoints            `json:"endpoints,omitempty"`
+	Inbox                     *StringWithOrderedCollection `json:"inbox,omitempty"`
+	Outbox                    *StringWithOrderedCollection `json:"outbox,omitempty"`
+	Followers                 *StringWithCollection        `json:"followers,omitempty"`
+	Following                 *StringWithCollection        `json:"following,omitempty"`
+	Liked                     *StringWithCollection        `json:"liked,omitempty"`
+	Streams                   *ObjectOrLinkOrString        `json:"streams,omitempty"`
+	PreferredUsername         string                       `json:"preferredUsername,omitempty"`
+	ManuallyApprovesFollowers bool                         `json:"manuallyApprovesFollowers,omitempty"`
+	Endpoints                 *Endpoints                   `json:"endpoints,omitempty"`
 }
 
 type Activity struct {

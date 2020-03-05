@@ -6,7 +6,7 @@
 
 ## Usage
 
-[![Documentation](http://img.shields.io/badge/godoc-reference-5272B4.svg)](https://pkg.go.dev/github.com/MatejLach/astreams@v0.0.0-20200204211509-70bcfc5b961f?tab=doc)
+[![Documentation](http://img.shields.io/badge/godoc-reference-5272B4.svg)](https://pkg.go.dev/github.com/MatejLach/astreams?tab=doc)
 
 Example Activity Streams object:
 

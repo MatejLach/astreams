@@ -83,7 +83,6 @@ type Object struct {
 	Bcc          *ObjectOrLinkOrString `json:"bcc,omitempty"`
 	MediaType    string                `json:"mediaType,omitempty"`
 	Duration     string                `json:"duration,omitempty"` // xsd:duration
-	PublicKey    *PublicKey            `json:"publicKey,omitempty"`
 }
 
 // Link represents the base ActivityStreams Link and all of its properties
@@ -130,6 +129,7 @@ type Icon struct {
 
 type Actor struct {
 	Object
+	PublicKey                 *PublicKey                   `json:"publicKey,omitempty"`
 	Inbox                     *StringWithOrderedCollection `json:"inbox,omitempty"`
 	Outbox                    *StringWithOrderedCollection `json:"outbox,omitempty"`
 	Followers                 *StringWithCollection        `json:"followers,omitempty"`

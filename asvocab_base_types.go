@@ -132,9 +132,9 @@ type Actor struct {
 	PublicKey                 *PublicKey                   `json:"publicKey,omitempty"`
 	Inbox                     *StringWithOrderedCollection `json:"inbox,omitempty"`
 	Outbox                    *StringWithOrderedCollection `json:"outbox,omitempty"`
-	Followers                 *StringWithCollection        `json:"followers,omitempty"`
-	Following                 *StringWithCollection        `json:"following,omitempty"`
-	Liked                     *StringWithCollection        `json:"liked,omitempty"`
+	Followers                 *StringWithOrderedCollection `json:"followers,omitempty"`
+	Following                 *StringWithOrderedCollection `json:"following,omitempty"`
+	Liked                     *StringWithOrderedCollection `json:"liked,omitempty"`
 	Streams                   *ObjectOrLinkOrString        `json:"streams,omitempty"`
 	PreferredUsername         string                       `json:"preferredUsername,omitempty"`
 	ManuallyApprovesFollowers bool                         `json:"manuallyApprovesFollowers,omitempty"`

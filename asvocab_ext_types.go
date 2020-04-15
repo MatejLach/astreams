@@ -114,7 +114,7 @@ type Question struct {
 	// only OneOf or AnyOf can be set, not both
 	OneOf  *ObjectOrLinkOrString `json:"oneOf,omitempty"`
 	AnyOf  *ObjectOrLinkOrString `json:"anyOf,omitempty"`
-	Closed string                `json:"closed,omitempty"`
+	Closed *time.Time            `json:"closed,omitempty"`
 }
 
 type Reject = Activity

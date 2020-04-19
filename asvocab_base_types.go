@@ -33,7 +33,7 @@ type Icons struct {
 	Icons []Icon
 }
 
-type Endpoints struct {
+type EndpointsOrString struct {
 	URL       string
 	Endpoints Endpoint
 }
@@ -138,7 +138,7 @@ type Actor struct {
 	Streams                   *ObjectOrLinkOrString        `json:"streams,omitempty"`
 	PreferredUsername         string                       `json:"preferredUsername,omitempty"`
 	ManuallyApprovesFollowers bool                         `json:"manuallyApprovesFollowers,omitempty"`
-	Endpoints                 *Endpoints                   `json:"endpoints,omitempty"`
+	EndpointsOrURI            *EndpointsOrString           `json:"endpoints,omitempty"`
 }
 
 type Activity struct {

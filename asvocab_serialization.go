@@ -185,7 +185,7 @@ func (sc *StringWithCollection) UnmarshalJSON(data []byte) error {
 }
 
 // Implements https://golang.org/pkg/encoding/json/#Unmarshaler
-func (enp *Endpoints) UnmarshalJSON(data []byte) error {
+func (enp *EndpointsOrString) UnmarshalJSON(data []byte) error {
 	if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'"'}) {
 		if err := json.Unmarshal(data, &enp.URL); err != nil {
 			return err
@@ -386,7 +386,7 @@ func (sc StringWithCollection) MarshalJSON() ([]byte, error) {
 }
 
 // Implements https://golang.org/pkg/encoding/json/#Marshal
-func (enp Endpoints) MarshalJSON() ([]byte, error) {
+func (enp EndpointsOrString) MarshalJSON() ([]byte, error) {
 	if len(enp.URL) > 0 {
 		jsonb, err := json.Marshal(enp.URL)
 		if err != nil {
@@ -400,7 +400,7 @@ func (enp Endpoints) MarshalJSON() ([]byte, error) {
 		}
 		return jsonb, nil
 	}
-	return []byte{}, errors.New("unrecognised content, cannot Marshal Endpoints, use nil for empty value")
+	return []byte{}, errors.New("unrecognised content, cannot Marshal EndpointsOrString, use nil for empty value")
 }
 
 // Implements https://golang.org/pkg/fmt/#Stringer
@@ -434,6 +434,6 @@ func (sc *StringWithCollection) String() string {
 }
 
 // Implements https://golang.org/pkg/fmt/#Stringer
-func (enp *Endpoints) String() string {
+func (enp *EndpointsOrString) String() string {
 	return fmt.Sprintf("%+v", *enp)
 }

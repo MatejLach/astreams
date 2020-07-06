@@ -204,16 +204,16 @@ func (enp *EndpointsOrString) UnmarshalJSON(data []byte) error {
 }
 
 // Implements https://golang.org/pkg/encoding/json/#Marshal
-func (ol ObjectOrLink) MarshalJSON() ([]byte, error) {
-	if len(ol) > 0 {
+func (ol *ObjectOrLink) MarshalJSON() ([]byte, error) {
+	if len(*ol) > 0 {
 		marshalB := bytes.NewBufferString("[")
-		for idx, target := range ol {
+		for idx, target := range *ol {
 			encoded, err := encodeASType(target)
 			if err != nil {
 				return []byte{}, err
 			}
 			marshalB.Write(encoded)
-			if idx < len(ol)-1 {
+			if idx < len(*ol)-1 {
 				_, err := marshalB.WriteString(",")
 				if err != nil {
 					return []byte{}, err
@@ -229,7 +229,7 @@ func (ol ObjectOrLink) MarshalJSON() ([]byte, error) {
 }
 
 // Implements https://golang.org/pkg/encoding/json/#Marshal
-func (ols ObjectOrLinkOrString) MarshalJSON() ([]byte, error) {
+func (ols *ObjectOrLinkOrString) MarshalJSON() ([]byte, error) {
 	var uri []byte
 	var target []byte
 	var err error
@@ -304,7 +304,7 @@ func (ols ObjectOrLinkOrString) MarshalJSON() ([]byte, error) {
 }
 
 // Implements https://golang.org/pkg/encoding/json/#Marshal
-func (ics Icons) MarshalJSON() ([]byte, error) {
+func (ics *Icons) MarshalJSON() ([]byte, error) {
 	if ics.URL != "" && len(ics.Icons) > 0 {
 		if _, err := url.ParseRequestURI(ics.URL); err != nil {
 			return []byte{}, err
@@ -350,7 +350,7 @@ func (ics Icons) MarshalJSON() ([]byte, error) {
 }
 
 // Implements https://golang.org/pkg/encoding/json/#Marshal
-func (soc StringWithOrderedCollection) MarshalJSON() ([]byte, error) {
+func (soc *StringWithOrderedCollection) MarshalJSON() ([]byte, error) {
 	if len(soc.URL) > 0 {
 		jsonb, err := json.Marshal(soc.URL)
 		if err != nil {
@@ -368,7 +368,7 @@ func (soc StringWithOrderedCollection) MarshalJSON() ([]byte, error) {
 }
 
 // Implements https://golang.org/pkg/encoding/json/#Marshal
-func (sc StringWithCollection) MarshalJSON() ([]byte, error) {
+func (sc *StringWithCollection) MarshalJSON() ([]byte, error) {
 	if len(sc.URL) > 0 {
 		jsonb, err := json.Marshal(sc.URL)
 		if err != nil {
@@ -386,7 +386,7 @@ func (sc StringWithCollection) MarshalJSON() ([]byte, error) {
 }
 
 // Implements https://golang.org/pkg/encoding/json/#Marshal
-func (enp EndpointsOrString) MarshalJSON() ([]byte, error) {
+func (enp *EndpointsOrString) MarshalJSON() ([]byte, error) {
 	if len(enp.URL) > 0 {
 		jsonb, err := json.Marshal(enp.URL)
 		if err != nil {

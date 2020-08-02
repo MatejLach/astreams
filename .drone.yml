@@ -12,3 +12,18 @@ steps:
     image: golang
     commands:
       - go test ./...
+
+---
+kind: pipeline
+type: docker
+name: linux-arm
+
+platform:
+  arch: arm
+  os: linux
+
+steps:
+  - name: test
+    image: golang
+    commands:
+      - go test ./...

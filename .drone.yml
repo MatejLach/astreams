@@ -11,6 +11,7 @@ steps:
   - name: test
     image: golang
     commands:
+      - go vet ./...
       - go test ./...
 
 ---
@@ -26,4 +27,5 @@ steps:
   - name: test
     image: golang
     commands:
+      - go vet ./...
       - go test ./...

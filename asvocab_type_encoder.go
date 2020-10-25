@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func encodeASType(t Targeter) ([]byte, error) {
+func encodeASType(t ActivityStreamer) ([]byte, error) {
 	datatType, _ := ConcreteType(t)
 	switch datatType {
 	case "Activity":

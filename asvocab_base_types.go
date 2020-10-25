@@ -67,6 +67,8 @@ type Object struct {
 	EndTime      *time.Time            `json:"endTime,omitempty"`
 	Generator    *ObjectOrLinkOrString `json:"generator,omitempty"`
 	Featured     *ObjectOrLinkOrString `json:"featured,omitempty"`
+	Likes        *ObjectOrLinkOrString `json:"likes,omitempty"`
+	Shares       *ObjectOrLinkOrString `json:"shares,omitempty"`
 	Icon         *ObjectOrLinkOrString `json:"icon,omitempty"`
 	Image        *ObjectOrLinkOrString `json:"image,omitempty"`
 	InReplyTo    *ObjectOrLinkOrString `json:"inReplyTo,omitempty"`

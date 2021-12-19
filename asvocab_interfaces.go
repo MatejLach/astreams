@@ -12,6 +12,8 @@ type ObjectLinker interface {
 
 // ActivityStreamer is a generic type constraint representing all valid Activity Streams 2.0 types
 type ActivityStreamer interface {
+	ObjectLinker
+
 	Object | Link | Actor | Activity | IntransitiveActivity | Collection | CollectionPage |
 		OrderedCollection | OrderedCollectionPage | Location | Icon | Image | Place | Profile |
 		Tombstone | Relationship | PublicKey | Question

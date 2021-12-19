@@ -35,7 +35,7 @@ func (ol *ObjectOrLink) UnmarshalJSON(data []byte) error {
 				if err := json.Unmarshal(data, &asObject); err != nil {
 					return err
 				}
-				*ol = append(*ol, ActivityStreamer(asObject))
+				*ol = append(*ol, asObject)
 			}
 		}
 	} else if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'{'}) {
@@ -58,7 +58,7 @@ func (ol *ObjectOrLink) UnmarshalJSON(data []byte) error {
 			if err := json.Unmarshal(data, &asObject); err != nil {
 				return err
 			}
-			*ol = append(*ol, ActivityStreamer(asObject))
+			*ol = append(*ol, ObjectLinker(asObject))
 		}
 	}
 	return nil

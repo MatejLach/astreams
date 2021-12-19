@@ -2,25 +2,32 @@ package astreams
 
 import "reflect"
 
-// ActivityStreamer can be either a (sub)type of an 'Object' or 'Link'
-type ActivityStreamer interface {
+// ObjectLinker can be either a (sub)type of 'Object' or a (sub)type of 'Link'
+type ObjectLinker interface {
 	IsObject() bool
 	IsLink() bool
 	GetObject() *Object
 	GetLink() *Link
 }
 
+// ActivityStreamer is a generic type constraint representing all valid Activity Streams 2.0 types
+type ActivityStreamer interface {
+	Object | Link | Actor | Activity | IntransitiveActivity | Collection | CollectionPage |
+		OrderedCollection | OrderedCollectionPage | Location | Icon | Image | Place | Profile |
+		Tombstone | Relationship | PublicKey | Question
+}
+
 // ConcreteType returns both, the type name obtained using reflection,
-// as well as the Type property of the Object/Link.
+// as well as the Type property of the Object / Link.
 // The object's own Type property is going to be more specific, so use that where useful.
-func ConcreteType(t ActivityStreamer) (reflectType, astreamsType string) {
+func ConcreteType(t ObjectLinker) (reflectType, astreamsType string) {
 	if t.IsLink() {
 		return reflect.TypeOf(t).Name(), t.GetLink().Type
 	}
 	return reflect.TypeOf(t).Name(), t.GetObject().Type
 }
 
-// Implements 'ActivityStreamer' interface for 'Object'
+// Implements 'ObjectLinker' interface for 'Object'
 func (o Object) IsObject() bool {
 	return true
 }
@@ -37,7 +44,7 @@ func (o Object) GetLink() *Link {
 	return nil
 }
 
-// Implements 'ActivityStreamer' interface for 'Link'
+// Implements 'ObjectLinker' interface for 'Link'
 func (l Link) IsObject() bool {
 	return false
 }

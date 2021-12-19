@@ -7,7 +7,7 @@ import (
 
 // ObjectOrLink is a wrapper type that represents any type of object or link
 // Single objects are still presented as slices, but with a single element
-type ObjectOrLink []ActivityStreamer
+type ObjectOrLink []ObjectLinker
 
 // ObjectOrLinkOrString is a type that can either represent simple string URL(s) or an Object/Link slice
 type ObjectOrLinkOrString struct {

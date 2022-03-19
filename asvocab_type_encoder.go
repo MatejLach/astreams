@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func encodeASType(t ActivityStreamer) ([]byte, error) {
+func encodeASType(t ObjectLinker) ([]byte, error) {
 	datatType, _ := ConcreteType(t)
 	switch datatType {
 	case "Activity":
@@ -505,7 +505,7 @@ func encodeASType(t ActivityStreamer) ([]byte, error) {
 		}
 		return []byte{}, fmt.Errorf("failed to Marshal %s", datatType)
 	case "PropertyValue":
-		if propertyValue, ok := t.(Mention); ok {
+		if propertyValue, ok := t.(PropertyValue); ok {
 			marshalB, err := json.Marshal(propertyValue)
 			if err != nil {
 				return []byte{}, err

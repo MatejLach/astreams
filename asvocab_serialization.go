@@ -35,7 +35,7 @@ func (ol *ObjectOrLink) UnmarshalJSON(data []byte) error {
 				if err := json.Unmarshal(data, &asObject); err != nil {
 					return err
 				}
-				*ol = append(*ol, ActivityStreamer(asObject))
+				*ol = append(*ol, asObject)
 			}
 		}
 	} else if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'{'}) {
@@ -58,7 +58,7 @@ func (ol *ObjectOrLink) UnmarshalJSON(data []byte) error {
 			if err := json.Unmarshal(data, &asObject); err != nil {
 				return err
 			}
-			*ol = append(*ol, ActivityStreamer(asObject))
+			*ol = append(*ol, asObject)
 		}
 	}
 	return nil
@@ -401,6 +401,38 @@ func (enp *EndpointsOrString) MarshalJSON() ([]byte, error) {
 		return jsonb, nil
 	}
 	return []byte{}, errors.New("unrecognised content, cannot Marshal EndpointsOrString, use nil for empty value")
+}
+
+// UnmarshalJSON is the generic unmarshaller for any valid ActivityStreams 2.0 object
+func (as *ActivityStream[T]) UnmarshalJSON(data []byte) error {
+	if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'['}) {
+		var rawJSONSlice []json.RawMessage
+		if err := json.Unmarshal(data, &rawJSONSlice); err != nil {
+			return err
+		}
+		for _, jsonObj := range rawJSONSlice {
+			var decodedObj T
+			err := json.Unmarshal(jsonObj, &decodedObj)
+			if err != nil {
+				return err
+			}
+			*as = append(*as, decodedObj)
+		}
+	} else if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'{'}) {
+		var decodedObj T
+		err := json.Unmarshal(data, &decodedObj)
+		if err != nil {
+			return err
+		}
+		*as = append(*as, decodedObj)
+	}
+	return nil
+}
+
+// MarshalJSON is the generic marshaller for any valid ActivityStreams 2.0 object
+func MarshalJSON[T ActivityStreamer]() ([]byte, error) {
+	var encodedObj T
+	return json.Marshal(encodedObj)
 }
 
 // Implements https://golang.org/pkg/fmt/#Stringer

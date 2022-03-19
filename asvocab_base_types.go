@@ -5,9 +5,12 @@ import (
 	"time"
 )
 
-// ObjectOrLink is a wrapper type that represents any type of object or link
+// ObjectOrLink is a wrapper type that represents any valid ActivityStreams 2.0 object or link
 // Single objects are still presented as slices, but with a single element
-type ObjectOrLink []ActivityStreamer
+type ObjectOrLink []ObjectLinker
+
+// ActivityStream represents a generic collection of valid ActivityStreams 2.0 objects
+type ActivityStream[T ActivityStreamer] []T
 
 // ObjectOrLinkOrString is a type that can either represent simple string URL(s) or an Object/Link slice
 type ObjectOrLinkOrString struct {

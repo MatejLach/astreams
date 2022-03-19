@@ -58,7 +58,7 @@ func (ol *ObjectOrLink) UnmarshalJSON(data []byte) error {
 			if err := json.Unmarshal(data, &asObject); err != nil {
 				return err
 			}
-			*ol = append(*ol, ObjectLinker(asObject))
+			*ol = append(*ol, asObject)
 		}
 	}
 	return nil

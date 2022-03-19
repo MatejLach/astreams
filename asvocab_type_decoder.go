@@ -198,11 +198,11 @@ func decodeASType(data []byte, jsonType string) (ObjectLinker, error) {
 		}
 		return create, nil
 	case "Delete":
-		deleteA := Delete{}
-		if err := decoder.Decode(&deleteA); err != nil {
+		deleteActivity := Delete{}
+		if err := decoder.Decode(&deleteActivity); err != nil {
 			return nil, err
 		}
-		return deleteA, nil
+		return deleteActivity, nil
 	case "Follow":
 		follow := Follow{}
 		if err := decoder.Decode(&follow); err != nil {

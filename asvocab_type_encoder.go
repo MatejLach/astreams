@@ -505,7 +505,7 @@ func encodeASType(t ObjectLinker) ([]byte, error) {
 		}
 		return []byte{}, fmt.Errorf("failed to Marshal %s", datatType)
 	case "PropertyValue":
-		if propertyValue, ok := t.(Mention); ok {
+		if propertyValue, ok := t.(PropertyValue); ok {
 			marshalB, err := json.Marshal(propertyValue)
 			if err != nil {
 				return []byte{}, err

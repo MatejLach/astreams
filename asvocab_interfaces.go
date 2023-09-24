@@ -17,6 +17,44 @@ type ActivityStreamer interface {
 		Tombstone | Relationship | PublicKey | Question
 }
 
+// DecodePayloadObjectType can be used to check the specific type of unknown JSON payload
+/*
+	payloadMeta, err := DecodePayloadObjectType(payload)
+	if err != nil {
+		//
+	}
+
+	switch payloadMeta.Type {
+	case "Note":
+		var note Note
+		err = json.Unmarshal([]byte(tc), &note)
+		if err != nil {
+			//
+		}
+	case "Offer":
+		var offer Offer
+		err = json.Unmarshal([]byte(tc), &offer)
+		if err != nil {
+			//
+		}
+	case "Person":
+		var person Person
+		err = json.Unmarshal([]byte(tc), &person)
+		if err != nil {
+			//
+		}
+
+		if person.Name == "" {
+			//
+		}
+	default:
+		var obj ObjectOrLinkOrString
+		err = json.Unmarshal([]byte(tc), &obj)
+		if err != nil {
+			//
+		}
+	}
+*/
 func DecodePayloadObjectType(payload io.Reader) (JsonPayload, error) {
 	var payloadType JsonPayload
 	err := json.NewDecoder(payload).Decode(&payloadType)

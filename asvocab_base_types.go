@@ -9,9 +9,6 @@ import (
 // Single objects are still presented as slices, but with a single element
 type ObjectOrLink []ObjectLinker
 
-// ActivityStream represents a generic collection of valid ActivityStreams 2.0 objects
-type ActivityStream[T ActivityStreamer] []T
-
 // ObjectOrLinkOrString is a type that can either represent simple string URL(s) or an Object/Link slice
 type ObjectOrLinkOrString struct {
 	URL    []string

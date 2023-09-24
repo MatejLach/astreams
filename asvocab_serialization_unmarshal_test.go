@@ -2,6 +2,7 @@ package astreams
 
 import (
 	"encoding/json"
+	"strings"
 	"testing"
 )
 
@@ -55,8 +56,6 @@ func TestUnmarshalJSON_ObjectOrLink(t *testing.T) {
 }
 
 func TestUnmarshalJSON_ObjectOrLinkOrString(t *testing.T) {
-	var obj ObjectOrLinkOrString
-	var err error
 	testCases := []string{
 		`{
   "@context": [
@@ -278,9 +277,40 @@ func TestUnmarshalJSON_ObjectOrLinkOrString(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		err = json.Unmarshal([]byte(tc), &obj)
+		payloadMeta, err := DecodePayloadObjectType(strings.NewReader(tc))
 		if err != nil {
 			t.Fatal(err)
+		}
+
+		switch payloadMeta.Type {
+		case "Note":
+			var note Note
+			err = json.Unmarshal([]byte(tc), &note)
+			if err != nil {
+				t.Fatal(err)
+			}
+		case "Offer":
+			var offer Offer
+			err = json.Unmarshal([]byte(tc), &offer)
+			if err != nil {
+				t.Fatal(err)
+			}
+		case "Person":
+			var person Person
+			err = json.Unmarshal([]byte(tc), &person)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if person.Name == "" {
+				t.Fatal(err)
+			}
+		default:
+			var obj ObjectOrLinkOrString
+			err = json.Unmarshal([]byte(tc), &obj)
+			if err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 }

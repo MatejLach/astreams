@@ -30,7 +30,7 @@ func (ol *ObjectOrLink) UnmarshalJSON(data []byte) error {
 					*ol = append(*ol, astype)
 				}
 			} else {
-				// assuming a generic Object if there's not a more specific type
+				// assuming a base Object if there's not a more specific type
 				// a Link without an explicit type is considered invalid
 				asObject := Object{}
 				if err := json.Unmarshal(data, &asObject); err != nil {

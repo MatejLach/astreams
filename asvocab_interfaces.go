@@ -1,13 +1,13 @@
 package astreams
 
-import "reflect"
+import (
+	"encoding/json"
+	"io"
+	"reflect"
+)
 
-// ObjectLinker can be either a (sub)type of 'Object' or a (sub)type of 'Link'
-type ObjectLinker interface {
-	IsObject() bool
-	IsLink() bool
-	GetObject() *Object
-	GetLink() *Link
+type JsonPayload struct {
+	Type string `json:"type"`
 }
 
 // ActivityStreamer is a generic type constraint representing all valid Activity Streams 2.0 types
@@ -17,8 +17,64 @@ type ActivityStreamer interface {
 		Tombstone | Relationship | PublicKey | Question
 }
 
+// DecodePayloadObjectType can be used to check the specific type of unknown JSON payload
+/*
+	payloadMeta, err := DecodePayloadObjectType(payload)
+	if err != nil {
+		//
+	}
+
+	switch payloadMeta.Type {
+	case "Note":
+		var note Note
+		err = json.Unmarshal([]byte(tc), &note)
+		if err != nil {
+			//
+		}
+	case "Offer":
+		var offer Offer
+		err = json.Unmarshal([]byte(tc), &offer)
+		if err != nil {
+			//
+		}
+	case "Person":
+		var person Person
+		err = json.Unmarshal([]byte(tc), &person)
+		if err != nil {
+			//
+		}
+
+		if person.Name == "" {
+			//
+		}
+	default:
+		var obj ObjectOrLinkOrString
+		err = json.Unmarshal([]byte(tc), &obj)
+		if err != nil {
+			//
+		}
+	}
+*/
+func DecodePayloadObjectType(payload io.Reader) (JsonPayload, error) {
+	var payloadType JsonPayload
+	err := json.NewDecoder(payload).Decode(&payloadType)
+	if err != nil {
+		return payloadType, err
+	}
+
+	return payloadType, nil
+}
+
+// ObjectLinker can be either a (sub)type of 'Object' or a (sub)type of 'Link'
+type ObjectLinker interface {
+	IsObject() bool
+	IsLink() bool
+	GetObject() *Object
+	GetLink() *Link
+}
+
 // ConcreteType returns both, the type name obtained using reflection,
-// as well as the Type property of the Object / Link.
+// and the Type property of the Object / Link JSON payload.
 // The object's own Type property is going to be more specific, so use that where useful.
 func ConcreteType(t ObjectLinker) (reflectType, astreamsType string) {
 	if t.IsLink() {

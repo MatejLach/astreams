@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/url"
 )
 
@@ -29,7 +30,7 @@ func (ol *ObjectOrLink) UnmarshalJSON(data []byte) error {
 					*ol = append(*ol, astype)
 				}
 			} else {
-				// assuming a generic Object if there's not a more specific type
+				// assuming a base Object if there's not a more specific type
 				// a Link without an explicit type is considered invalid
 				asObject := Object{}
 				if err := json.Unmarshal(data, &asObject); err != nil {
@@ -52,7 +53,7 @@ func (ol *ObjectOrLink) UnmarshalJSON(data []byte) error {
 				*ol = append(*ol, astype)
 			}
 		} else {
-			// assuming a generic Object if there's not a more specific type
+			// assuming a base Object if there's not a more specific type
 			// a Link without an explicit type is considered invalid
 			asObject := Object{}
 			if err := json.Unmarshal(data, &asObject); err != nil {
@@ -403,36 +404,21 @@ func (enp *EndpointsOrString) MarshalJSON() ([]byte, error) {
 	return []byte{}, errors.New("unrecognised content, cannot Marshal EndpointsOrString, use nil for empty value")
 }
 
-// UnmarshalJSON is the generic unmarshaller for any valid ActivityStreams 2.0 object
-func (as *ActivityStream[T]) UnmarshalJSON(data []byte) error {
-	if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'['}) {
-		var rawJSONSlice []json.RawMessage
-		if err := json.Unmarshal(data, &rawJSONSlice); err != nil {
-			return err
-		}
-		for _, jsonObj := range rawJSONSlice {
-			var decodedObj T
-			err := json.Unmarshal(jsonObj, &decodedObj)
-			if err != nil {
-				return err
-			}
-			*as = append(*as, decodedObj)
-		}
-	} else if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'{'}) {
-		var decodedObj T
-		err := json.Unmarshal(data, &decodedObj)
-		if err != nil {
-			return err
-		}
-		*as = append(*as, decodedObj)
+// DecodeJSON is the generic unmarshaller for any valid ActivityStreams 2.0 object
+func DecodeJSON[T ActivityStreamer](jsonPayload io.Reader) (T, error) {
+	var result T
+
+	err := json.NewDecoder(jsonPayload).Decode(&result)
+	if err != nil {
+		return result, err
 	}
-	return nil
+
+	return result, nil
 }
 
-// MarshalJSON is the generic marshaller for any valid ActivityStreams 2.0 object
-func MarshalJSON[T ActivityStreamer]() ([]byte, error) {
-	var encodedObj T
-	return json.Marshal(encodedObj)
+// EncodeJSON is the generic marshaller for any valid ActivityStreams 2.0 object
+func EncodeJSON[T ActivityStreamer](toEncode T) ([]byte, error) {
+	return json.Marshal(toEncode)
 }
 
 // Implements https://golang.org/pkg/fmt/#Stringer

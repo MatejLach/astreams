@@ -2,6 +2,7 @@ package astreams
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -52,6 +53,43 @@ func TestUnmarshalJSON_ObjectOrLink(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+	}
+}
+
+func TestUnmarshalJSON_OrderedCollectionPage(t *testing.T) {
+	var ordColPage OrderedCollectionPage
+	var err error
+	testCases := []string{
+		`{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "id": "https://social.matej-lach.me/users/MatejLach/following?page=1",
+  "type": "OrderedCollectionPage",
+  "totalItems": 329,
+  "next": "https://social.matej-lach.me/users/MatejLach/following?page=2",
+  "partOf": "https://social.matej-lach.me/users/MatejLach/following",
+  "orderedItems": [
+    "https://suma-ev.social/users/christian",
+    "https://mastodon.social/users/Daojoan",
+    "https://23.social/users/pantierra",
+    "https://famichiki.jp/users/tsturm",
+    "https://bikeshed.vibber.net/users/brooke",
+    "https://idlethumbs.social/users/ja2ke",
+    "https://oisaur.com/users/renchap",
+    "https://social.alternativebit.fr/users/picnoir",
+    "https://swiss.social/users/lx",
+    "https://social.lol/users/whakkee",
+    "https://oldbytes.space/users/aperezdc",
+    "https://tech.lgbt/users/jaycie"
+  ]
+}`,
+	}
+
+	for _, tc := range testCases {
+		err = json.Unmarshal([]byte(tc), &ordColPage)
+		if err != nil {
+			t.Fatal(err)
+		}
+		fmt.Println(ordColPage)
 	}
 }
 

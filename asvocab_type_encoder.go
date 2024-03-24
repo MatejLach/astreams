@@ -7,7 +7,7 @@ import (
 )
 
 func encodeASType(t ObjectLinker) ([]byte, error) {
-	dataType, _ := ConcreteType(t)
+	_, dataType := ConcreteType(t)
 	switch dataType {
 	case "Activity":
 		if activity, ok := t.(Activity); ok {

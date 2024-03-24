@@ -46,11 +46,11 @@ type Object struct {
 	ASContext    *ObjectOrLinkOrString `json:"@context,omitempty"`
 	ASLanguage   string                `json:"@language,omitempty"`
 	Schema       string                `json:"schema,omitempty"`
+	ID           string                `json:"id,omitempty"`
 	Type         string                `json:"type,omitempty"`
 	AtType       string                `json:"@type,omitempty"`
 	Summary      string                `json:"summary,omitempty"`
 	SummaryMap   map[string]string     `json:"summaryMap,omitempty"`
-	ID           string                `json:"id,omitempty"`
 	AtID         string                `json:"@id,omitempty"`
 	Name         string                `json:"name,omitempty"`
 	NameMap      map[string]string     `json:"nameMap,omitempty"`
@@ -199,7 +199,7 @@ type OrderedCollection struct {
 	OrderedItems *ObjectOrLinkOrString `json:"orderedItems"`
 }
 
-func (oc OrderedCollection) Len() int {
+func (oc *OrderedCollection) Len() int {
 	if len(oc.OrderedItems.URL) > 0 {
 		return len(oc.OrderedItems.URL)
 	}
@@ -207,7 +207,7 @@ func (oc OrderedCollection) Len() int {
 	return len(oc.OrderedItems.Target)
 }
 
-func (oc OrderedCollection) Less(i, j int) bool {
+func (oc *OrderedCollection) Less(i, j int) bool {
 	if len(oc.OrderedItems.Target) > 0 {
 		if oc.OrderedItems.Target[i].IsObject() && oc.OrderedItems.Target[j].IsObject() {
 			return oc.OrderedItems.Target[i].GetObject().Published.Before(*oc.OrderedItems.Target[j].GetObject().Published)
@@ -223,7 +223,7 @@ func (oc OrderedCollection) Less(i, j int) bool {
 	return false
 }
 
-func (oc OrderedCollection) Swap(i, j int) {
+func (oc *OrderedCollection) Swap(i, j int) {
 	if len(oc.OrderedItems.URL) > 0 {
 		oc.OrderedItems.URL[i], oc.OrderedItems.URL[j] = oc.OrderedItems.URL[j], oc.OrderedItems.URL[i]
 	} else {
@@ -231,8 +231,8 @@ func (oc OrderedCollection) Swap(i, j int) {
 	}
 }
 
-// sort OrderedCollection objects by Updated
-func (oc OrderedCollection) SortByUpdated() {
+// SortByUpdated sorts OrderedCollection objects by Updated rather than Published date
+func (oc *OrderedCollection) SortByUpdated() {
 	sort.Slice(oc.OrderedItems, func(i, j int) bool {
 		if len(oc.OrderedItems.Target) > 0 {
 			if oc.OrderedItems.Target[i].IsObject() && oc.OrderedItems.Target[j].IsObject() {

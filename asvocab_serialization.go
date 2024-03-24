@@ -207,6 +207,16 @@ func (enp *EndpointsOrString) UnmarshalJSON(data []byte) error {
 // Implements https://golang.org/pkg/encoding/json/#Marshal
 func (ol *ObjectOrLink) MarshalJSON() ([]byte, error) {
 	if len(*ol) > 0 {
+		if len(*ol) == 1 {
+			objl := *ol
+			target, err := json.Marshal(objl[0])
+			if err != nil {
+				return []byte{}, err
+			}
+
+			return target, nil
+		}
+
 		marshalB := bytes.NewBufferString("[")
 		for idx, target := range *ol {
 			encoded, err := encodeASType(target)
@@ -263,7 +273,7 @@ func (ols *ObjectOrLinkOrString) MarshalJSON() ([]byte, error) {
 				return []byte{}, err
 			}
 		} else {
-			target, err = json.Marshal(ols.Target)
+			target, err = json.Marshal(&ols.Target)
 			if err != nil {
 				return []byte{}, err
 			}
@@ -271,7 +281,7 @@ func (ols *ObjectOrLinkOrString) MarshalJSON() ([]byte, error) {
 		return bytes.NewBufferString(fmt.Sprintf("[%s,%s]", string(uri), string(target))).Bytes(), nil
 	} else if len(ols.URL) == 0 && len(ols.Target) > 0 {
 		if len(ols.Target) > 1 {
-			target, err = json.Marshal(ols.Target)
+			target, err = json.Marshal(&ols.Target)
 			if err != nil {
 				return []byte{}, err
 			}
@@ -302,6 +312,152 @@ func (ols *ObjectOrLinkOrString) MarshalJSON() ([]byte, error) {
 		return uri, nil
 	}
 	return []byte{}, errors.New("unrecognised content, cannot Marshal ObjectOrLinkOrString, use nil for empty value")
+}
+
+// Implements https://golang.org/pkg/encoding/json/#Marshal
+func (colp *CollectionPage) MarshalJSON() ([]byte, error) {
+	encodedBase, err := json.Marshal(&colp.Collection)
+	if err != nil {
+		return []byte{}, err
+	}
+	encodedBase = bytes.TrimSuffix(encodedBase, []byte("}"))
+
+	encodedPage, err := json.Marshal(struct {
+		Next   *ObjectOrLinkOrString `json:"next,omitempty"`
+		PartOf *ObjectOrLinkOrString `json:"partOf,omitempty"`
+		Prev   *ObjectOrLinkOrString `json:"prev,omitempty"`
+	}{
+		Next:   colp.Next,
+		PartOf: colp.PartOf,
+		Prev:   colp.Prev,
+	})
+	if err != nil {
+		return []byte{}, err
+	}
+	encodedPage = bytes.TrimPrefix(encodedPage, []byte("{"))
+
+	return bytes.NewBufferString(fmt.Sprintf("%s, %s", encodedBase, encodedPage)).Bytes(), nil
+}
+
+// Implements https://golang.org/pkg/encoding/json/#Marshal
+func (col *Collection) MarshalJSON() ([]byte, error) {
+	encodedBase, err := json.Marshal(ObjectLinker(col).GetObject())
+	if err != nil {
+		return []byte{}, err
+	}
+	encodedBase = bytes.TrimSuffix(encodedBase, []byte("}"))
+
+	encodedCollection, err := json.Marshal(struct {
+		TotalItems int                   `json:"totalItems,omitempty"`
+		Current    *ObjectOrLinkOrString `json:"current,omitempty"`
+		First      *ObjectOrLinkOrString `json:"first,omitempty"`
+		Last       *ObjectOrLinkOrString `json:"last,omitempty"`
+	}{
+		TotalItems: col.TotalItems,
+		Current:    col.Current,
+		First:      col.First,
+		Last:       col.Last,
+	})
+	if err != nil {
+		return []byte{}, err
+	}
+	encodedCollection = bytes.TrimPrefix(encodedCollection, []byte("{"))
+
+	if len(col.Items.URL) > 0 {
+		encodedCollection = bytes.TrimSuffix(encodedCollection, []byte("}"))
+		encodedBytes, err := json.Marshal(&col.Items.URL)
+		if err != nil {
+			return []byte{}, err
+		}
+
+		return bytes.NewBufferString(fmt.Sprintf("%s, %s, \"items\": \n%s}", encodedBase, encodedCollection, encodedBytes)).Bytes(), nil
+	}
+
+	if len(col.Items.Target) > 0 {
+		encodedCollection = bytes.TrimSuffix(encodedCollection, []byte("}"))
+		encodedBytes, err := json.Marshal(&col.Items.Target)
+		if err != nil {
+			return []byte{}, err
+		}
+
+		return bytes.NewBufferString(fmt.Sprintf("%s, %s, \"items\": [\n%s\n]\n}", encodedBase, encodedCollection, encodedBytes)).Bytes(), nil
+	}
+
+	return []byte{}, nil
+}
+
+// Implements https://golang.org/pkg/encoding/json/#Marshal
+func (ocolp *OrderedCollectionPage) MarshalJSON() ([]byte, error) {
+	encodedBase, err := json.Marshal(&ocolp.OrderedCollection)
+	if err != nil {
+		return []byte{}, err
+	}
+	encodedBase = bytes.TrimSuffix(encodedBase, []byte("}"))
+
+	encodedPage, err := json.Marshal(struct {
+		Next       *ObjectOrLinkOrString `json:"next,omitempty"`
+		PartOf     *ObjectOrLinkOrString `json:"partOf,omitempty"`
+		Prev       *ObjectOrLinkOrString `json:"prev,omitempty"`
+		StartIndex uint                  `json:"startIndex,omitempty"`
+	}{
+		Next:       ocolp.Next,
+		PartOf:     ocolp.PartOf,
+		Prev:       ocolp.Prev,
+		StartIndex: ocolp.StartIndex,
+	})
+	if err != nil {
+		return []byte{}, err
+	}
+	encodedPage = bytes.TrimPrefix(encodedPage, []byte("{"))
+
+	return bytes.NewBufferString(fmt.Sprintf("%s, %s", encodedBase, encodedPage)).Bytes(), nil
+}
+
+// Implements https://golang.org/pkg/encoding/json/#Marshal
+func (oc *OrderedCollection) MarshalJSON() ([]byte, error) {
+	encodedBase, err := json.Marshal(ObjectLinker(oc).GetObject())
+	if err != nil {
+		return []byte{}, err
+	}
+	encodedBase = bytes.TrimSuffix(encodedBase, []byte("}"))
+
+	encodedOrderedCollection, err := json.Marshal(struct {
+		TotalItems int                   `json:"totalItems,omitempty"`
+		Current    *ObjectOrLinkOrString `json:"current,omitempty"`
+		First      *ObjectOrLinkOrString `json:"first,omitempty"`
+		Last       *ObjectOrLinkOrString `json:"last,omitempty"`
+	}{
+		TotalItems: oc.TotalItems,
+		Current:    oc.Current,
+		First:      oc.First,
+		Last:       oc.Last,
+	})
+	if err != nil {
+		return []byte{}, err
+	}
+	encodedOrderedCollection = bytes.TrimPrefix(encodedOrderedCollection, []byte("{"))
+
+	if len(oc.OrderedItems.URL) > 0 {
+		encodedOrderedCollection = bytes.TrimSuffix(encodedOrderedCollection, []byte("}"))
+		encodedBytes, err := json.Marshal(&oc.OrderedItems.URL)
+		if err != nil {
+			return []byte{}, err
+		}
+
+		return bytes.NewBufferString(fmt.Sprintf("%s, %s, \"orderedItems\": \n%s}", encodedBase, encodedOrderedCollection, encodedBytes)).Bytes(), nil
+	}
+
+	if len(oc.OrderedItems.Target) > 0 {
+		encodedOrderedCollection = bytes.TrimSuffix(encodedOrderedCollection, []byte("}"))
+		encodedBytes, err := json.Marshal(&oc.OrderedItems.Target)
+		if err != nil {
+			return []byte{}, err
+		}
+
+		return bytes.NewBufferString(fmt.Sprintf("%s, %s, \"orderedItems\": [\n%s\n]\n}", encodedBase, encodedOrderedCollection, encodedBytes)).Bytes(), nil
+	}
+
+	return []byte{}, nil
 }
 
 // Implements https://golang.org/pkg/encoding/json/#Marshal
@@ -418,7 +574,7 @@ func DecodeJSON[T ActivityStreamer](jsonPayload io.Reader) (T, error) {
 
 // EncodeJSON is the generic marshaller for any valid ActivityStreams 2.0 object
 func EncodeJSON[T ActivityStreamer](toEncode T) ([]byte, error) {
-	return json.Marshal(toEncode)
+	return json.Marshal(&toEncode)
 }
 
 // Implements https://golang.org/pkg/fmt/#Stringer

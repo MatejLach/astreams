@@ -2,7 +2,6 @@ package astreams
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 	"testing"
 )
@@ -89,7 +88,6 @@ func TestUnmarshalJSON_OrderedCollectionPage(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		fmt.Println(ordColPage)
 	}
 }
 

@@ -46,11 +46,11 @@ type Object struct {
 	ASContext    *ObjectOrLinkOrString `json:"@context,omitempty"`
 	ASLanguage   string                `json:"@language,omitempty"`
 	Schema       string                `json:"schema,omitempty"`
+	ID           string                `json:"id,omitempty"`
 	Type         string                `json:"type,omitempty"`
 	AtType       string                `json:"@type,omitempty"`
 	Summary      string                `json:"summary,omitempty"`
 	SummaryMap   map[string]string     `json:"summaryMap,omitempty"`
-	ID           string                `json:"id,omitempty"`
 	AtID         string                `json:"@id,omitempty"`
 	Name         string                `json:"name,omitempty"`
 	NameMap      map[string]string     `json:"nameMap,omitempty"`
@@ -164,15 +164,10 @@ type IntransitiveActivity struct {
 
 // CollectionPage is provided for spec compliance, prefer OrderedCollectionPage
 type CollectionPage struct {
-	Object
-	TotalItems int                   `json:"totalItems,omitempty"`
-	Current    *ObjectOrLinkOrString `json:"current,omitempty"`
-	First      *ObjectOrLinkOrString `json:"first,omitempty"`
-	Last       *ObjectOrLinkOrString `json:"last,omitempty"`
-	PartOf     *ObjectOrLinkOrString `json:"partOf,omitempty"`
-	Next       *ObjectOrLinkOrString `json:"next,omitempty"`
-	Prev       *ObjectOrLinkOrString `json:"prev,omitempty"`
-	Items      ObjectOrLink          `json:"items,omitempty"`
+	Collection
+	PartOf *ObjectOrLinkOrString `json:"partOf,omitempty"`
+	Next   *ObjectOrLinkOrString `json:"next,omitempty"`
+	Prev   *ObjectOrLinkOrString `json:"prev,omitempty"`
 }
 
 // Collection is provided for spec compliance, prefer OrderedCollection
@@ -182,58 +177,16 @@ type Collection struct {
 	Current    *ObjectOrLinkOrString `json:"current,omitempty"`
 	First      *ObjectOrLinkOrString `json:"first,omitempty"`
 	Last       *ObjectOrLinkOrString `json:"last,omitempty"`
-	Items      ObjectOrLink          `json:"items,omitempty"`
+	Items      *ObjectOrLinkOrString `json:"items,omitempty"`
 }
 
 // OrderedCollectionPage implements https://golang.org/pkg/sort/#Interface
 type OrderedCollectionPage struct {
-	Object
-	TotalItems   int                   `json:"totalItems,omitempty"`
-	Current      *ObjectOrLinkOrString `json:"current,omitempty"`
-	First        *ObjectOrLinkOrString `json:"first,omitempty"`
-	Last         *ObjectOrLinkOrString `json:"last,omitempty"`
-	PartOf       *ObjectOrLinkOrString `json:"partOf,omitempty"`
-	Next         *ObjectOrLinkOrString `json:"next,omitempty"`
-	Prev         *ObjectOrLinkOrString `json:"prev,omitempty"`
-	StartIndex   uint                  `json:"startIndex,omitempty"`
-	OrderedItems ObjectOrLink          `json:"orderedItems,omitempty"`
-}
-
-func (ocp OrderedCollectionPage) Len() int {
-	return len(ocp.OrderedItems)
-}
-
-func (ocp OrderedCollectionPage) Less(i, j int) bool {
-	if ocp.OrderedItems[i].IsObject() && ocp.OrderedItems[j].IsObject() {
-		return ocp.OrderedItems[i].GetObject().Published.Before(*ocp.OrderedItems[j].GetObject().Published)
-	} else if ocp.OrderedItems[i].IsObject() && ocp.OrderedItems[j].IsLink() {
-		return ocp.OrderedItems[i].GetObject().Published.Before(*ocp.OrderedItems[j].GetLink().Published)
-	} else if ocp.OrderedItems[i].IsLink() && ocp.OrderedItems[j].IsLink() {
-		return ocp.OrderedItems[i].GetLink().Published.Before(*ocp.OrderedItems[j].GetLink().Published)
-	} else if ocp.OrderedItems[i].IsLink() && ocp.OrderedItems[j].IsObject() {
-		return ocp.OrderedItems[i].GetLink().Published.Before(*ocp.OrderedItems[j].GetObject().Published)
-	}
-	return true
-}
-
-func (ocp OrderedCollectionPage) Swap(i, j int) {
-	ocp.OrderedItems[i], ocp.OrderedItems[j] = ocp.OrderedItems[j], ocp.OrderedItems[i]
-}
-
-// sort OrderedCollectionPage by Updated
-func (ocp OrderedCollectionPage) SortByUpdated() {
-	sort.Slice(ocp.OrderedItems, func(i, j int) bool {
-		if ocp.OrderedItems[i].IsObject() && ocp.OrderedItems[j].IsObject() {
-			return ocp.OrderedItems[i].GetObject().Updated.Before(*ocp.OrderedItems[j].GetObject().Updated)
-		} else if ocp.OrderedItems[i].IsObject() && ocp.OrderedItems[j].IsLink() {
-			return ocp.OrderedItems[i].GetObject().Updated.Before(*ocp.OrderedItems[j].GetLink().Published)
-		} else if ocp.OrderedItems[i].IsLink() && ocp.OrderedItems[j].IsLink() {
-			return ocp.OrderedItems[i].GetLink().Published.Before(*ocp.OrderedItems[j].GetLink().Published)
-		} else if ocp.OrderedItems[i].IsLink() && ocp.OrderedItems[j].IsObject() {
-			return ocp.OrderedItems[i].GetLink().Published.Before(*ocp.OrderedItems[j].GetObject().Updated)
-		}
-		return true
-	})
+	OrderedCollection
+	PartOf     *ObjectOrLinkOrString `json:"partOf,omitempty"`
+	Next       *ObjectOrLinkOrString `json:"next,omitempty"`
+	Prev       *ObjectOrLinkOrString `json:"prev,omitempty"`
+	StartIndex uint                  `json:"startIndex,omitempty"`
 }
 
 // OrderedCollection implements https://golang.org/pkg/sort/#Interface
@@ -243,42 +196,57 @@ type OrderedCollection struct {
 	Current      *ObjectOrLinkOrString `json:"current,omitempty"`
 	First        *ObjectOrLinkOrString `json:"first,omitempty"`
 	Last         *ObjectOrLinkOrString `json:"last,omitempty"`
-	OrderedItems ObjectOrLink          `json:"orderedItems"`
+	OrderedItems *ObjectOrLinkOrString `json:"orderedItems"`
 }
 
-func (oc OrderedCollection) Len() int {
-	return len(oc.OrderedItems)
-}
-
-func (oc OrderedCollection) Less(i, j int) bool {
-	if oc.OrderedItems[i].IsObject() && oc.OrderedItems[j].IsObject() {
-		return oc.OrderedItems[i].GetObject().Published.Before(*oc.OrderedItems[j].GetObject().Published)
-	} else if oc.OrderedItems[i].IsObject() && oc.OrderedItems[j].IsLink() {
-		return oc.OrderedItems[i].GetObject().Published.Before(*oc.OrderedItems[j].GetLink().Published)
-	} else if oc.OrderedItems[i].IsLink() && oc.OrderedItems[j].IsLink() {
-		return oc.OrderedItems[i].GetLink().Published.Before(*oc.OrderedItems[j].GetLink().Published)
-	} else if oc.OrderedItems[i].IsLink() && oc.OrderedItems[j].IsObject() {
-		return oc.OrderedItems[i].GetLink().Published.Before(*oc.OrderedItems[j].GetObject().Published)
+func (oc *OrderedCollection) Len() int {
+	if len(oc.OrderedItems.URL) > 0 {
+		return len(oc.OrderedItems.URL)
 	}
-	return true
+
+	return len(oc.OrderedItems.Target)
 }
 
-func (oc OrderedCollection) Swap(i, j int) {
-	oc.OrderedItems[i], oc.OrderedItems[j] = oc.OrderedItems[j], oc.OrderedItems[i]
-}
-
-// sort OrderedCollection by Updated
-func (oc OrderedCollection) SortByUpdated() {
-	sort.Slice(oc.OrderedItems, func(i, j int) bool {
-		if oc.OrderedItems[i].IsObject() && oc.OrderedItems[j].IsObject() {
-			return oc.OrderedItems[i].GetObject().Updated.Before(*oc.OrderedItems[j].GetObject().Updated)
-		} else if oc.OrderedItems[i].IsObject() && oc.OrderedItems[j].IsLink() {
-			return oc.OrderedItems[i].GetObject().Updated.Before(*oc.OrderedItems[j].GetLink().Published)
-		} else if oc.OrderedItems[i].IsLink() && oc.OrderedItems[j].IsLink() {
-			return oc.OrderedItems[i].GetLink().Published.Before(*oc.OrderedItems[j].GetLink().Published)
-		} else if oc.OrderedItems[i].IsLink() && oc.OrderedItems[j].IsObject() {
-			return oc.OrderedItems[i].GetLink().Published.Before(*oc.OrderedItems[j].GetObject().Updated)
+func (oc *OrderedCollection) Less(i, j int) bool {
+	if len(oc.OrderedItems.Target) > 0 {
+		if oc.OrderedItems.Target[i].IsObject() && oc.OrderedItems.Target[j].IsObject() {
+			return oc.OrderedItems.Target[i].GetObject().Published.Before(*oc.OrderedItems.Target[j].GetObject().Published)
+		} else if oc.OrderedItems.Target[i].IsObject() && oc.OrderedItems.Target[j].IsLink() {
+			return oc.OrderedItems.Target[i].GetObject().Published.Before(*oc.OrderedItems.Target[j].GetLink().Published)
+		} else if oc.OrderedItems.Target[i].IsLink() && oc.OrderedItems.Target[j].IsLink() {
+			return oc.OrderedItems.Target[i].GetLink().Published.Before(*oc.OrderedItems.Target[j].GetLink().Published)
+		} else if oc.OrderedItems.Target[i].IsLink() && oc.OrderedItems.Target[j].IsObject() {
+			return oc.OrderedItems.Target[i].GetLink().Published.Before(*oc.OrderedItems.Target[j].GetObject().Published)
 		}
-		return true
+	}
+
+	return false
+}
+
+func (oc *OrderedCollection) Swap(i, j int) {
+	if len(oc.OrderedItems.URL) > 0 {
+		oc.OrderedItems.URL[i], oc.OrderedItems.URL[j] = oc.OrderedItems.URL[j], oc.OrderedItems.URL[i]
+	} else {
+		oc.OrderedItems.Target[i], oc.OrderedItems.Target[j] = oc.OrderedItems.Target[j], oc.OrderedItems.Target[i]
+	}
+}
+
+// SortByUpdated sorts OrderedCollection objects by Updated rather than Published date
+func (oc *OrderedCollection) SortByUpdated() {
+	sort.Slice(oc.OrderedItems, func(i, j int) bool {
+		if len(oc.OrderedItems.Target) > 0 {
+			if oc.OrderedItems.Target[i].IsObject() && oc.OrderedItems.Target[j].IsObject() {
+				return oc.OrderedItems.Target[i].GetObject().Updated.Before(*oc.OrderedItems.Target[j].GetObject().Updated)
+			} else if oc.OrderedItems.Target[i].IsObject() && oc.OrderedItems.Target[j].IsLink() {
+				return oc.OrderedItems.Target[i].GetObject().Updated.Before(*oc.OrderedItems.Target[j].GetLink().Published)
+			} else if oc.OrderedItems.Target[i].IsLink() && oc.OrderedItems.Target[j].IsLink() {
+				return oc.OrderedItems.Target[i].GetLink().Published.Before(*oc.OrderedItems.Target[j].GetLink().Published)
+			} else if oc.OrderedItems.Target[i].IsLink() && oc.OrderedItems.Target[j].IsObject() {
+				return oc.OrderedItems.Target[i].GetLink().Published.Before(*oc.OrderedItems.Target[j].GetObject().Updated)
+			}
+		}
+
+		return false
+
 	})
 }

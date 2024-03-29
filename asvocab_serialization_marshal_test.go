@@ -6,6 +6,49 @@ import (
 	"testing"
 )
 
+func TestMarshalJSON_OrderedCollectionPage(t *testing.T) {
+	want := []string{
+		`{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "id": "https://social.matej-lach.me/users/MatejLach/following?page=1",
+  "type": "OrderedCollectionPage",
+  "totalItems": 329,
+  "orderedItems": [
+    "https://suma-ev.social/users/christian",
+    "https://mastodon.social/users/Daojoan",
+    "https://23.social/users/pantierra",
+    "https://famichiki.jp/users/tsturm",
+    "https://bikeshed.vibber.net/users/brooke",
+    "https://idlethumbs.social/users/ja2ke",
+    "https://oisaur.com/users/renchap",
+    "https://social.alternativebit.fr/users/picnoir",
+    "https://swiss.social/users/lx",
+    "https://social.lol/users/whakkee",
+    "https://oldbytes.space/users/aperezdc",
+    "https://tech.lgbt/users/jaycie"
+  ],
+  "next": "https://social.matej-lach.me/users/MatejLach/following?page=2",
+  "partOf": "https://social.matej-lach.me/users/MatejLach/following"
+}`,
+	}
+
+	for idx := range want {
+		// Prepare the object to marshal first
+		orderedCollectionPage := OrderedCollectionPage{}
+		err := json.Unmarshal([]byte(want[idx]), &orderedCollectionPage)
+		if err != nil {
+			t.Fatal(err)
+		}
+		got, err := json.MarshalIndent(&orderedCollectionPage, "", "  ")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if string(got) != strings.TrimSpace(want[idx]) {
+			t.Fatalf("marshaled OrderedCollectionPage JSON not as expected, wanted '%s', got '%s'", strings.TrimSpace(want[idx]), string(got))
+		}
+	}
+}
+
 func TestMarshalJSON_Collection(t *testing.T) {
 	want := []string{
 		`
@@ -24,8 +67,8 @@ func TestMarshalJSON_Collection(t *testing.T) {
       "generator": "http://example.org/activities-app",
       "published": "2011-02-10T15:04:55Z",
       "actor": {
-        "type": "Person",
         "id": "http://www.test.example/martin",
+        "type": "Person",
         "name": "Martin Smith",
         "image": {
           "type": "Link",
@@ -37,8 +80,8 @@ func TestMarshalJSON_Collection(t *testing.T) {
         "url": "http://example.org/martin"
       },
       "object": {
-        "type": "Image",
         "id": "http://example.org/album/máiréad.jpg",
+        "type": "Image",
         "name": "My fluffy cat",
         "preview": {
           "type": "Link",
@@ -59,8 +102,8 @@ func TestMarshalJSON_Collection(t *testing.T) {
         ]
       },
       "target": {
-        "type": "Collection",
         "id": "http://example.org/album/",
+        "type": "Collection",
         "nameMap": {
           "en": "Martin's Photo Album",
           "ga": "Grianghraif Mairtin"
@@ -84,7 +127,7 @@ func TestMarshalJSON_Collection(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		got, err := json.MarshalIndent(collection, "", "  ")
+		got, err := json.MarshalIndent(&collection, "", "  ")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -113,9 +156,9 @@ func TestMarshalJSON_Actor(t *testing.T) {
       }
     }
   ],
+  "id": "https://social.matej-lach.me/users/MatejLach",
   "type": "Person",
   "summary": "\u003cp\u003eFree software enthusiast, \u003ca href=\"https://social.matej-lach.me/tags/golang\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003egolang\u003c/span\u003e\u003c/a\u003e, \u003ca href=\"https://social.matej-lach.me/tags/rustlang\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003erustlang\u003c/span\u003e\u003c/a\u003e, \u003ca href=\"https://social.matej-lach.me/tags/jvm\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003ejvm\u003c/span\u003e\u003c/a\u003e \u0026amp; \u003ca href=\"https://social.matej-lach.me/tags/swiftlang\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eswiftlang\u003c/span\u003e\u003c/a\u003e  . Working on a question/answer \u003ca href=\"https://social.matej-lach.me/tags/ActivityPub\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eActivityPub\u003c/span\u003e\u003c/a\u003e server. \u003ca href=\"https://social.matej-lach.me/tags/systemd\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003esystemd\u003c/span\u003e\u003c/a\u003e aficionado :-)\u003c/p\u003e",
-  "id": "https://social.matej-lach.me/users/MatejLach",
   "name": "Matej Ľach  ✅",
   "attachment": {
     "type": "PropertyValue",
@@ -190,7 +233,7 @@ func TestMarshalJSON_Actor(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		got, err := json.MarshalIndent(person, "", "  ")
+		got, err := json.MarshalIndent(&person, "", "  ")
 		if err != nil {
 			t.Fatal(err)
 		}

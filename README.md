@@ -96,7 +96,7 @@ if err != nil {
 
 ```go
 // Marshal to AS 2.0 JSON
-jsB, err := json.Marshal(&exobj) // note the use of a pointer receiver here!
+jsB, err := json.Marshal(&exobj) // note the use of a pointer here; astreams MarshalJSON methods are defined on pointer receivers
 if err != nil {
 	log.Println(err)
 }

@@ -71,6 +71,12 @@ func decodeASType(data []byte, jsonType string) (ObjectLinker, error) {
 			return nil, err
 		}
 		return group, nil
+	case "Icon":
+		icon := Icon{}
+		if err := decoder.Decode(&icon); err != nil {
+			return nil, err
+		}
+		return icon, nil
 	case "Image":
 		image := Image{}
 		if err := decoder.Decode(&image); err != nil {

@@ -15,10 +15,22 @@ type ObjectOrLinkOrString struct {
 	Target ObjectOrLink
 }
 
+// StringWithOrderedCollectionPage can store a string URL pointing to an OrderedCollectionPage, which can itself be stored in the struct
+type StringWithOrderedCollectionPage struct {
+	URL               string
+	OrdCollectionPage OrderedCollectionPage
+}
+
 // StringWithOrderedCollection can store a string URL pointing to an OrderedCollection, which can itself be stored in the struct
 type StringWithOrderedCollection struct {
 	URL           string
 	OrdCollection OrderedCollection
+}
+
+// StringWithCollectionPage can store a string URL pointing to a CollectionPage, which can itself be stored in the struct
+type StringWithCollectionPage struct {
+	URL            string
+	CollectionPage CollectionPage
 }
 
 // StringWithCollection can store a string URL pointing to a Collection, which can itself be stored in the struct
@@ -131,16 +143,16 @@ type Icon struct {
 
 type Actor struct {
 	Object
-	PublicKey                 *PublicKey                   `json:"publicKey,omitempty"`
-	Inbox                     *StringWithOrderedCollection `json:"inbox,omitempty"`
-	Outbox                    *StringWithOrderedCollection `json:"outbox,omitempty"`
-	Followers                 *StringWithOrderedCollection `json:"followers,omitempty"`
-	Following                 *StringWithOrderedCollection `json:"following,omitempty"`
-	Liked                     *StringWithOrderedCollection `json:"liked,omitempty"`
-	Streams                   *ObjectOrLinkOrString        `json:"streams,omitempty"`
-	PreferredUsername         string                       `json:"preferredUsername,omitempty"`
-	ManuallyApprovesFollowers bool                         `json:"manuallyApprovesFollowers,omitempty"`
-	EndpointsOrURI            *EndpointsOrString           `json:"endpoints,omitempty"`
+	PublicKey                 *PublicKey                       `json:"publicKey,omitempty"`
+	Inbox                     *StringWithOrderedCollectionPage `json:"inbox,omitempty"`
+	Outbox                    *StringWithOrderedCollectionPage `json:"outbox,omitempty"`
+	Followers                 *StringWithOrderedCollectionPage `json:"followers,omitempty"`
+	Following                 *StringWithOrderedCollectionPage `json:"following,omitempty"`
+	Liked                     *StringWithOrderedCollectionPage `json:"liked,omitempty"`
+	Streams                   *ObjectOrLinkOrString            `json:"streams,omitempty"`
+	PreferredUsername         string                           `json:"preferredUsername,omitempty"`
+	ManuallyApprovesFollowers bool                             `json:"manuallyApprovesFollowers,omitempty"`
+	EndpointsOrURI            *EndpointsOrString               `json:"endpoints,omitempty"`
 }
 
 type Activity struct {

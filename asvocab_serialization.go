@@ -152,6 +152,23 @@ func (ols *ObjectOrLinkOrString) UnmarshalJSON(data []byte) error {
 }
 
 // Implements https://golang.org/pkg/encoding/json/#Unmarshaler
+func (socp *StringWithOrderedCollectionPage) UnmarshalJSON(data []byte) error {
+	if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'"'}) {
+		if err := json.Unmarshal(data, &socp.URL); err != nil {
+			return err
+		}
+		if _, err := url.ParseRequestURI(socp.URL); err != nil {
+			return err
+		}
+	} else if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'{'}) {
+		if err := json.Unmarshal(data, &socp.OrdCollectionPage); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Implements https://golang.org/pkg/encoding/json/#Unmarshaler
 func (soc *StringWithOrderedCollection) UnmarshalJSON(data []byte) error {
 	if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'"'}) {
 		if err := json.Unmarshal(data, &soc.URL); err != nil {
@@ -162,6 +179,23 @@ func (soc *StringWithOrderedCollection) UnmarshalJSON(data []byte) error {
 		}
 	} else if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'{'}) {
 		if err := json.Unmarshal(data, &soc.OrdCollection); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Implements https://golang.org/pkg/encoding/json/#Unmarshaler
+func (scp *StringWithCollectionPage) UnmarshalJSON(data []byte) error {
+	if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'"'}) {
+		if err := json.Unmarshal(data, &scp.URL); err != nil {
+			return err
+		}
+		if _, err := url.ParseRequestURI(scp.URL); err != nil {
+			return err
+		}
+	} else if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'{'}) {
+		if err := json.Unmarshal(data, &scp.CollectionPage); err != nil {
 			return err
 		}
 	}
@@ -507,6 +541,24 @@ func (ics *Icons) MarshalJSON() ([]byte, error) {
 }
 
 // Implements https://golang.org/pkg/encoding/json/#Marshal
+func (socp *StringWithOrderedCollectionPage) MarshalJSON() ([]byte, error) {
+	if len(socp.URL) > 0 {
+		jsonb, err := json.Marshal(socp.URL)
+		if err != nil {
+			return []byte{}, err
+		}
+		return jsonb, nil
+	} else if socp.OrdCollectionPage.PartOf != nil {
+		jsonb, err := json.Marshal(socp.OrdCollectionPage)
+		if err != nil {
+			return []byte{}, err
+		}
+		return jsonb, nil
+	}
+	return []byte{}, errors.New("unrecognised content, cannot Marshal StringWithOrderedCollectionPage, use nil for empty value")
+}
+
+// Implements https://golang.org/pkg/encoding/json/#Marshal
 func (soc *StringWithOrderedCollection) MarshalJSON() ([]byte, error) {
 	if len(soc.URL) > 0 {
 		jsonb, err := json.Marshal(soc.URL)
@@ -525,6 +577,24 @@ func (soc *StringWithOrderedCollection) MarshalJSON() ([]byte, error) {
 }
 
 // Implements https://golang.org/pkg/encoding/json/#Marshal
+func (scp *StringWithCollectionPage) MarshalJSON() ([]byte, error) {
+	if len(scp.URL) > 0 {
+		jsonb, err := json.Marshal(scp.URL)
+		if err != nil {
+			return []byte{}, err
+		}
+		return jsonb, nil
+	} else if scp.CollectionPage.PartOf != nil {
+		jsonb, err := json.Marshal(scp.CollectionPage)
+		if err != nil {
+			return []byte{}, err
+		}
+		return jsonb, nil
+	}
+	return []byte{}, errors.New("unrecognised content, cannot Marshal StringWithCollectionPage, use nil for empty value")
+}
+
+// Implements https://golang.org/pkg/encoding/json/#Marshal
 func (sc *StringWithCollection) MarshalJSON() ([]byte, error) {
 	if len(sc.URL) > 0 {
 		jsonb, err := json.Marshal(sc.URL)
@@ -539,7 +609,7 @@ func (sc *StringWithCollection) MarshalJSON() ([]byte, error) {
 		}
 		return jsonb, nil
 	}
-	return []byte{}, errors.New("unrecognised content, cannot Marshal StringWithOrderedCollection, use nil for empty value")
+	return []byte{}, errors.New("unrecognised content, cannot Marshal StringWithCollection, use nil for empty value")
 }
 
 // Implements https://golang.org/pkg/encoding/json/#Marshal

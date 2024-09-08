@@ -143,16 +143,16 @@ type Icon struct {
 
 type Actor struct {
 	Object
-	PublicKey                 *PublicKey                   `json:"publicKey,omitempty"`
-	Inbox                     *StringWithOrderedCollection `json:"inbox,omitempty"`
-	Outbox                    *StringWithOrderedCollection `json:"outbox,omitempty"`
-	Followers                 *StringWithOrderedCollection `json:"followers,omitempty"`
-	Following                 *StringWithOrderedCollection `json:"following,omitempty"`
-	Liked                     *StringWithOrderedCollection `json:"liked,omitempty"`
-	Streams                   *ObjectOrLinkOrString        `json:"streams,omitempty"`
-	PreferredUsername         string                       `json:"preferredUsername,omitempty"`
-	ManuallyApprovesFollowers bool                         `json:"manuallyApprovesFollowers,omitempty"`
-	EndpointsOrURI            *EndpointsOrString           `json:"endpoints,omitempty"`
+	PublicKey                 *PublicKey                       `json:"publicKey,omitempty"`
+	Inbox                     *StringWithOrderedCollectionPage `json:"inbox,omitempty"`
+	Outbox                    *StringWithOrderedCollectionPage `json:"outbox,omitempty"`
+	Followers                 *StringWithOrderedCollectionPage `json:"followers,omitempty"`
+	Following                 *StringWithOrderedCollectionPage `json:"following,omitempty"`
+	Liked                     *StringWithOrderedCollectionPage `json:"liked,omitempty"`
+	Streams                   *ObjectOrLinkOrString            `json:"streams,omitempty"`
+	PreferredUsername         string                           `json:"preferredUsername,omitempty"`
+	ManuallyApprovesFollowers bool                             `json:"manuallyApprovesFollowers,omitempty"`
+	EndpointsOrURI            *EndpointsOrString               `json:"endpoints,omitempty"`
 }
 
 type Activity struct {

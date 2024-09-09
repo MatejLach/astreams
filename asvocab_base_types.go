@@ -211,7 +211,7 @@ type OrderedCollection struct {
 	OrderedItems *ObjectOrLinkOrString `json:"orderedItems"`
 }
 
-func (oc *OrderedCollection) Len() int {
+func (oc OrderedCollection) Len() int {
 	if len(oc.OrderedItems.URL) > 0 {
 		return len(oc.OrderedItems.URL)
 	}
@@ -219,23 +219,23 @@ func (oc *OrderedCollection) Len() int {
 	return len(oc.OrderedItems.Target)
 }
 
-func (oc *OrderedCollection) Less(i, j int) bool {
+func (oc OrderedCollection) Less(i, j int) bool {
 	if len(oc.OrderedItems.Target) > 0 {
 		if oc.OrderedItems.Target[i].IsObject() && oc.OrderedItems.Target[j].IsObject() {
-			return oc.OrderedItems.Target[i].GetObject().Published.Before(*oc.OrderedItems.Target[j].GetObject().Published)
+			return oc.OrderedItems.Target[j].GetObject().Published.Before(*oc.OrderedItems.Target[i].GetObject().Published)
 		} else if oc.OrderedItems.Target[i].IsObject() && oc.OrderedItems.Target[j].IsLink() {
-			return oc.OrderedItems.Target[i].GetObject().Published.Before(*oc.OrderedItems.Target[j].GetLink().Published)
+			return oc.OrderedItems.Target[j].GetObject().Published.Before(*oc.OrderedItems.Target[i].GetLink().Published)
 		} else if oc.OrderedItems.Target[i].IsLink() && oc.OrderedItems.Target[j].IsLink() {
-			return oc.OrderedItems.Target[i].GetLink().Published.Before(*oc.OrderedItems.Target[j].GetLink().Published)
+			return oc.OrderedItems.Target[j].GetLink().Published.Before(*oc.OrderedItems.Target[i].GetLink().Published)
 		} else if oc.OrderedItems.Target[i].IsLink() && oc.OrderedItems.Target[j].IsObject() {
-			return oc.OrderedItems.Target[i].GetLink().Published.Before(*oc.OrderedItems.Target[j].GetObject().Published)
+			return oc.OrderedItems.Target[j].GetLink().Published.Before(*oc.OrderedItems.Target[i].GetObject().Published)
 		}
 	}
 
 	return false
 }
 
-func (oc *OrderedCollection) Swap(i, j int) {
+func (oc OrderedCollection) Swap(i, j int) {
 	if len(oc.OrderedItems.URL) > 0 {
 		oc.OrderedItems.URL[i], oc.OrderedItems.URL[j] = oc.OrderedItems.URL[j], oc.OrderedItems.URL[i]
 	} else {
@@ -244,17 +244,17 @@ func (oc *OrderedCollection) Swap(i, j int) {
 }
 
 // SortByUpdated sorts OrderedCollection objects by Updated rather than Published date
-func (oc *OrderedCollection) SortByUpdated() {
+func (oc OrderedCollection) SortByUpdated() {
 	sort.Slice(oc.OrderedItems, func(i, j int) bool {
 		if len(oc.OrderedItems.Target) > 0 {
 			if oc.OrderedItems.Target[i].IsObject() && oc.OrderedItems.Target[j].IsObject() {
-				return oc.OrderedItems.Target[i].GetObject().Updated.Before(*oc.OrderedItems.Target[j].GetObject().Updated)
+				return oc.OrderedItems.Target[j].GetObject().Updated.Before(*oc.OrderedItems.Target[i].GetObject().Updated)
 			} else if oc.OrderedItems.Target[i].IsObject() && oc.OrderedItems.Target[j].IsLink() {
-				return oc.OrderedItems.Target[i].GetObject().Updated.Before(*oc.OrderedItems.Target[j].GetLink().Published)
+				return oc.OrderedItems.Target[j].GetObject().Updated.Before(*oc.OrderedItems.Target[i].GetLink().Published)
 			} else if oc.OrderedItems.Target[i].IsLink() && oc.OrderedItems.Target[j].IsLink() {
-				return oc.OrderedItems.Target[i].GetLink().Published.Before(*oc.OrderedItems.Target[j].GetLink().Published)
+				return oc.OrderedItems.Target[j].GetLink().Published.Before(*oc.OrderedItems.Target[i].GetLink().Published)
 			} else if oc.OrderedItems.Target[i].IsLink() && oc.OrderedItems.Target[j].IsObject() {
-				return oc.OrderedItems.Target[i].GetLink().Published.Before(*oc.OrderedItems.Target[j].GetObject().Updated)
+				return oc.OrderedItems.Target[j].GetLink().Published.Before(*oc.OrderedItems.Target[i].GetObject().Updated)
 			}
 		}
 

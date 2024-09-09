@@ -2,8 +2,10 @@ package astreams
 
 import (
 	"encoding/json"
+	"sort"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestUnmarshalJSON_ObjectOrLink(t *testing.T) {
@@ -253,7 +255,7 @@ func TestUnmarshalJSON_ObjectOrLinkOrString(t *testing.T) {
   "url": "https://social.matej-lach.me/@MatejLach",
   "manuallyApprovesFollowers": false,
   "publicKey": {
-    "id": "https://social.matej-lach.me/users/MatejLach#main-key",
+    "id": "https://social.matej-lach.me/users/MatejLach#main.go-key",
     "owner": "https://social.matej-lach.me/users/MatejLach",
     "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm9ir9e6zclOuWFN+mrtV\nqjz+qNYdgYYA7TGLWf4heNjdQRP0wOTjSY5mXST95aKY8h30LSyPAI01/GLrPsme\nm+uSgr59VX3dyvDHYiOSSuMl8lkFMGthxWlKXcUb7vFcJnHRr4q5TUZ+J4wjEksw\nWmqK5me2Lnt+wVQnWXplfnknVJaZvCPEfRWVVu53lgSfTkF+rO4Bl6osw2TrIj3T\n8MoOpnGKXSTGuL86cAQAkxbJcqkFeM/ksojVBqVpGn+xdQuOf62j6mFzZl4B9wfo\nKah+O7zbgvJEHhSmvSZlo8b9YJre0YbAJBCcQnAyj3m2oSEwIKz20jjTapsiAJFS\nTwIDAQAB\n-----END PUBLIC KEY-----\n"
   },
@@ -370,5 +372,111 @@ func TestUnmarshalJSON_Link(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+	}
+}
+
+func TestOrderedCollection_Sorting(t *testing.T) {
+	payload := `{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "OrderedCollection",
+  "id": "https://example.com/users/alice/outbox",
+  "totalItems": 5,
+  "first": "https://example.com/users/alice/outbox?page=1",
+  "last": "https://example.com/users/alice/outbox?page=1",
+  "orderedItems": [
+    {
+      "id": "https://example.com/users/alice/statuses/2",
+      "type": "Like",
+      "actor": "https://example.com/users/alice",
+      "published": "2024-05-03T11:42:19Z",
+      "object": "https://example.com/users/charlie/statuses/99"
+    },
+    {
+      "id": "https://example.com/users/alice/statuses/5",
+      "type": "Create",
+      "actor": "https://example.com/users/alice",
+      "published": "2024-08-15T09:23:47Z",
+      "to": ["https://www.w3.org/ns/activitystreams#Public"],
+      "cc": ["https://example.com/users/alice/followers"],
+      "object": {
+        "id": "https://example.com/users/alice/statuses/5",
+        "type": "Note",
+        "content": "Just finished reading a great book on AI ethics!",
+        "attributedTo": "https://example.com/users/alice",
+        "to": ["https://www.w3.org/ns/activitystreams#Public"],
+        "cc": ["https://example.com/users/alice/followers"],
+        "published": "2024-08-15T09:23:47Z"
+      }
+    },
+    {
+      "id": "https://example.com/users/alice/statuses/4",
+      "type": "Announce",
+      "actor": "https://example.com/users/alice",
+      "published": "2024-07-22T14:05:32Z",
+      "to": ["https://www.w3.org/ns/activitystreams#Public"],
+      "cc": ["https://example.com/users/alice/followers"],
+      "object": "https://example.com/users/bob/statuses/42"
+    },
+    {
+      "id": "https://example.com/users/alice/statuses/3",
+      "type": "Create",
+      "actor": "https://example.com/users/alice",
+      "published": "2024-06-10T18:30:00Z",
+      "to": ["https://example.com/users/bob"],
+      "cc": ["https://example.com/users/alice/followers"],
+      "object": {
+        "id": "https://example.com/users/alice/statuses/3",
+        "type": "Note",
+        "content": "@bob Looking forward to our meetup next week!",
+        "attributedTo": "https://example.com/users/alice",
+        "to": ["https://example.com/users/bob"],
+        "cc": ["https://example.com/users/alice/followers"],
+        "published": "2024-06-10T18:30:00Z",
+        "tag": [
+          {
+            "type": "Mention",
+            "href": "https://example.com/users/bob",
+            "name": "@bob"
+          }
+        ]
+      }
+    },
+    {
+      "id": "https://example.com/users/alice/statuses/1",
+      "type": "Create",
+      "actor": "https://example.com/users/alice",
+      "published": "2024-04-01T08:00:00Z",
+      "to": ["https://www.w3.org/ns/activitystreams#Public"],
+      "cc": ["https://example.com/users/alice/followers"],
+      "object": {
+        "id": "https://example.com/users/alice/statuses/1",
+        "type": "Note",
+        "content": "Hello, Mastodon! This is my first toot. #introduction",
+        "attributedTo": "https://example.com/users/alice",
+        "to": ["https://www.w3.org/ns/activitystreams#Public"],
+        "cc": ["https://example.com/users/alice/followers"],
+        "published": "2024-04-01T08:00:00Z",
+        "tag": [
+          {
+            "type": "Hashtag",
+            "href": "https://example.com/tags/introduction",
+            "name": "#introduction"
+          }
+        ]
+      }
+    }
+  ]
+}
+`
+	oc := OrderedCollection{}
+	err := json.Unmarshal([]byte(payload), &oc)
+	if err != nil {
+		t.Fatalf("Failed Unmarshaling an OrderedCollection: %s", err)
+	}
+
+	sort.Sort(oc)
+	mostRecentPostPublishedAt := oc.OrderedItems.Target[0].GetObject().Published.Format(time.RFC3339)
+	if mostRecentPostPublishedAt != "2024-08-15T09:23:47Z" {
+		t.Fatalf("Expected %s to be the first published date in a sorted collection, but got: %s", "2024-08-15 09:23:47 +0000 UTC", mostRecentPostPublishedAt)
 	}
 }

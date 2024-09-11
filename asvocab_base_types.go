@@ -245,7 +245,7 @@ func (oc OrderedCollection) Swap(i, j int) {
 
 // SortByUpdated sorts OrderedCollection objects by Updated rather than Published date
 func (oc OrderedCollection) SortByUpdated() {
-	sort.Slice(oc.OrderedItems, func(i, j int) bool {
+	sort.Slice(oc.OrderedItems.Target, func(i, j int) bool {
 		if len(oc.OrderedItems.Target) > 0 {
 			if oc.OrderedItems.Target[i].IsObject() && oc.OrderedItems.Target[j].IsObject() {
 				return oc.OrderedItems.Target[j].GetObject().Updated.Before(*oc.OrderedItems.Target[i].GetObject().Updated)

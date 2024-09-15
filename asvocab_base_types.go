@@ -55,7 +55,7 @@ type EndpointsOrString struct {
 // Object represents the base ActivityStreams Object and all of its properties
 // Most of the other types extend Object
 type Object struct {
-	ASContext    *ObjectOrLinkOrString `json:"@context,omitempty"`
+	ASContext    any                   `json:"@context,omitempty"`
 	ASLanguage   string                `json:"@language,omitempty"`
 	Schema       string                `json:"schema,omitempty"`
 	ID           string                `json:"id,omitempty"`
@@ -78,7 +78,6 @@ type Object struct {
 	StartTime    *time.Time            `json:"startTime,omitempty"`
 	EndTime      *time.Time            `json:"endTime,omitempty"`
 	Generator    *ObjectOrLinkOrString `json:"generator,omitempty"`
-	Featured     *ObjectOrLinkOrString `json:"featured,omitempty"`
 	Likes        *ObjectOrLinkOrString `json:"likes,omitempty"`
 	Shares       *ObjectOrLinkOrString `json:"shares,omitempty"`
 	Icon         *ObjectOrLinkOrString `json:"icon,omitempty"`
@@ -102,7 +101,7 @@ type Object struct {
 // Link represents the base ActivityStreams Link and all of its properties
 // Other Link types extend it
 type Link struct {
-	ASContext  *ObjectOrLinkOrString `json:"@context,omitempty"`
+	ASContext  any                   `json:"@context,omitempty"`
 	ASLanguage string                `json:"@language,omitempty"`
 	Type       string                `json:"type"`
 	Href       string                `json:"href,omitempty"`
@@ -149,9 +148,15 @@ type Actor struct {
 	Followers                 *StringWithOrderedCollectionPage `json:"followers,omitempty"`
 	Following                 *StringWithOrderedCollectionPage `json:"following,omitempty"`
 	Liked                     *StringWithOrderedCollectionPage `json:"liked,omitempty"`
+	Featured                  *StringWithOrderedCollection     `json:"featured,omitempty"`
+	FeaturedTags              *StringWithCollection            `json:"featuredTags,omitempty"`
 	Streams                   *ObjectOrLinkOrString            `json:"streams,omitempty"`
 	PreferredUsername         string                           `json:"preferredUsername,omitempty"`
-	ManuallyApprovesFollowers bool                             `json:"manuallyApprovesFollowers,omitempty"`
+	ManuallyApprovesFollowers *bool                            `json:"manuallyApprovesFollowers,omitempty"`
+	Discoverable              *bool                            `json:"discoverable,omitempty"`
+	Indexable                 *bool                            `json:"indexable,omitempty"`
+	Memorial                  *bool                            `json:"memorial,omitempty"`
+	Devices                   *StringWithCollection            `json:"devices,omitempty"`
 	EndpointsOrURI            *EndpointsOrString               `json:"endpoints,omitempty"`
 }
 

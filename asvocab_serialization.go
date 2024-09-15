@@ -345,6 +345,11 @@ func (ols *ObjectOrLinkOrString) MarshalJSON() ([]byte, error) {
 		}
 		return uri, nil
 	}
+
+	if len(ols.Target) == 0 || len(ols.URL) == 0 {
+		return bytes.NewBufferString("[]").Bytes(), nil
+	}
+
 	return []byte{}, errors.New("unrecognised content, cannot Marshal ObjectOrLinkOrString, use nil for empty value")
 }
 

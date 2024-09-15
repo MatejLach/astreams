@@ -2,8 +2,10 @@ package astreams
 
 import (
 	"encoding/json"
-	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestMarshalJSON_OrderedCollectionPage(t *testing.T) {
@@ -36,16 +38,11 @@ func TestMarshalJSON_OrderedCollectionPage(t *testing.T) {
 		// Prepare the object to marshal first
 		orderedCollectionPage := OrderedCollectionPage{}
 		err := json.Unmarshal([]byte(want[idx]), &orderedCollectionPage)
-		if err != nil {
-			t.Fatal(err)
-		}
+		require.NoError(t, err)
 		got, err := json.MarshalIndent(&orderedCollectionPage, "", "  ")
-		if err != nil {
-			t.Fatal(err)
-		}
-		if string(got) != strings.TrimSpace(want[idx]) {
-			t.Fatalf("marshaled OrderedCollectionPage JSON not as expected, wanted '%s', got '%s'", strings.TrimSpace(want[idx]), string(got))
-		}
+		require.NoError(t, err)
+
+		assert.JSONEq(t, want[idx], string(got))
 	}
 }
 
@@ -124,121 +121,154 @@ func TestMarshalJSON_Collection(t *testing.T) {
 		// Prepare the object to marshal first
 		collection := Collection{}
 		err := json.Unmarshal([]byte(want[idx]), &collection)
-		if err != nil {
-			t.Fatal(err)
-		}
+		require.NoError(t, err)
 		got, err := json.MarshalIndent(&collection, "", "  ")
-		if err != nil {
-			t.Fatal(err)
-		}
-		if string(got) != strings.TrimSpace(want[idx]) {
-			t.Fatalf("marshaled Collection JSON not as expected, wanted '%s', got '%s'", strings.TrimSpace(want[idx]), string(got))
-		}
+		require.NoError(t, err)
+
+		assert.JSONEq(t, want[idx], string(got))
 	}
 }
 
 func TestMarshalJSON_Actor(t *testing.T) {
 	want := []string{
-		`
-{
+		`{
   "@context": [
     "https://www.w3.org/ns/activitystreams",
     "https://w3id.org/security/v1",
     {
-      "schema": "http://schema.org#",
+      "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+      "toot": "http://joinmastodon.org/ns#",
+      "featured": {
+        "@id": "toot:featured",
+        "@type": "@id"
+      },
+      "featuredTags": {
+        "@id": "toot:featuredTags",
+        "@type": "@id"
+      },
       "alsoKnownAs": {
-        "@type": "@id",
-        "@id": "as:alsoKnownAs"
+        "@id": "as:alsoKnownAs",
+        "@type": "@id"
       },
       "movedTo": {
+        "@id": "as:movedTo",
+        "@type": "@id"
+      },
+      "schema": "http://schema.org#",
+      "PropertyValue": "schema:PropertyValue",
+      "value": "schema:value",
+      "discoverable": "toot:discoverable",
+      "Device": "toot:Device",
+      "Ed25519Signature": "toot:Ed25519Signature",
+      "Ed25519Key": "toot:Ed25519Key",
+      "Curve25519Key": "toot:Curve25519Key",
+      "EncryptedMessage": "toot:EncryptedMessage",
+      "publicKeyBase64": "toot:publicKeyBase64",
+      "deviceId": "toot:deviceId",
+      "claim": {
         "@type": "@id",
-        "@id": "as:movedTo"
+        "@id": "toot:claim"
+      },
+      "fingerprintKey": {
+        "@type": "@id",
+        "@id": "toot:fingerprintKey"
+      },
+      "identityKey": {
+        "@type": "@id",
+        "@id": "toot:identityKey"
+      },
+      "devices": {
+        "@type": "@id",
+        "@id": "toot:devices"
+      },
+      "messageFranking": "toot:messageFranking",
+      "messageType": "toot:messageType",
+      "cipherText": "toot:cipherText",
+      "suspended": "toot:suspended",
+      "memorial": "toot:memorial",
+      "indexable": "toot:indexable",
+      "Hashtag": "as:Hashtag",
+      "focalPoint": {
+        "@container": "@list",
+        "@id": "toot:focalPoint"
       }
     }
   ],
   "id": "https://social.matej-lach.me/users/MatejLach",
   "type": "Person",
-  "summary": "\u003cp\u003eFree software enthusiast, \u003ca href=\"https://social.matej-lach.me/tags/golang\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003egolang\u003c/span\u003e\u003c/a\u003e, \u003ca href=\"https://social.matej-lach.me/tags/rustlang\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003erustlang\u003c/span\u003e\u003c/a\u003e, \u003ca href=\"https://social.matej-lach.me/tags/jvm\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003ejvm\u003c/span\u003e\u003c/a\u003e \u0026amp; \u003ca href=\"https://social.matej-lach.me/tags/swiftlang\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eswiftlang\u003c/span\u003e\u003c/a\u003e  . Working on a question/answer \u003ca href=\"https://social.matej-lach.me/tags/ActivityPub\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003eActivityPub\u003c/span\u003e\u003c/a\u003e server. \u003ca href=\"https://social.matej-lach.me/tags/systemd\" class=\"mention hashtag\" rel=\"tag\"\u003e#\u003cspan\u003esystemd\u003c/span\u003e\u003c/a\u003e aficionado :-)\u003c/p\u003e",
-  "name": "Matej Ľach  ✅",
-  "attachment": {
-    "type": "PropertyValue",
-    "name": "Blog",
-    "value": "\u003ca href=\"https://blog.matej-lach.me\" rel=\"me nofollow noopener\" target=\"_blank\"\u003e\u003cspan class=\"invisible\"\u003ehttps://\u003c/span\u003e\u003cspan class=\"\"\u003eblog.matej-lach.me\u003c/span\u003e\u003cspan class=\"invisible\"\u003e\u003c/span\u003e\u003c/a\u003e"
-  },
+  "following": "https://social.matej-lach.me/users/MatejLach/following",
+  "followers": "https://social.matej-lach.me/users/MatejLach/followers",
+  "inbox": "https://social.matej-lach.me/users/MatejLach/inbox",
+  "outbox": "https://social.matej-lach.me/users/MatejLach/outbox",
   "featured": "https://social.matej-lach.me/users/MatejLach/collections/featured",
-  "icon": {
-    "type": "Image",
-    "url": "https://social.matej-lach.me/system/accounts/avatars/000/000/001/original/6e9242b03795bf80.png?1509060490",
-    "mediaType": "image/png"
-  },
-  "image": {
-    "type": "Image",
-    "url": "https://social.matej-lach.me/system/accounts/headers/000/000/001/original/f18240c45b0ac254.png?1576335545",
-    "mediaType": "image/png"
-  },
-  "tag": [
-    {
-      "type": "Hashtag",
-      "href": "https://social.matej-lach.me/explore/golang",
-      "name": "#golang"
-    },
-    {
-      "type": "Hashtag",
-      "href": "https://social.matej-lach.me/explore/activitypub",
-      "name": "#activitypub"
-    },
-    {
-      "type": "Hashtag",
-      "href": "https://social.matej-lach.me/explore/rustlang",
-      "name": "#rustlang"
-    },
-    {
-      "type": "Hashtag",
-      "href": "https://social.matej-lach.me/explore/swiftlang",
-      "name": "#swiftlang"
-    },
-    {
-      "type": "Hashtag",
-      "href": "https://social.matej-lach.me/explore/jvm",
-      "name": "#jvm"
-    },
-    {
-      "type": "Hashtag",
-      "href": "https://social.matej-lach.me/explore/systemd",
-      "name": "#systemd"
-    }
-  ],
+  "featuredTags": "https://social.matej-lach.me/users/MatejLach/collections/tags",
+  "preferredUsername": "MatejLach",
+  "name": "Matej Ľach  ✅",
+  "summary": "<p>Free software enthusiast, <a href=\"https://social.matej-lach.me/tags/golang\" class=\"mention hashtag\" rel=\"tag\">#<span>golang</span></a>, <a href=\"https://social.matej-lach.me/tags/rustlang\" class=\"mention hashtag\" rel=\"tag\">#<span>rustlang</span></a>, <a href=\"https://social.matej-lach.me/tags/swiftlang\" class=\"mention hashtag\" rel=\"tag\">#<span>swiftlang</span></a>  . Working on a question/answer <a href=\"https://social.matej-lach.me/tags/ActivityPub\" class=\"mention hashtag\" rel=\"tag\">#<span>ActivityPub</span></a> server. <a href=\"https://social.matej-lach.me/tags/systemd\" class=\"mention hashtag\" rel=\"tag\">#<span>systemd</span></a> aficionado :-)</p>",
   "url": "https://social.matej-lach.me/@MatejLach",
+  "manuallyApprovesFollowers": false,
+  "discoverable": true,
+  "indexable": false,
+  "published": "2017-10-26T00:00:00Z",
+  "memorial": false,
+  "devices": "https://social.matej-lach.me/users/MatejLach/collections/devices",
   "publicKey": {
     "id": "https://social.matej-lach.me/users/MatejLach#main-key",
     "owner": "https://social.matej-lach.me/users/MatejLach",
     "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm9ir9e6zclOuWFN+mrtV\nqjz+qNYdgYYA7TGLWf4heNjdQRP0wOTjSY5mXST95aKY8h30LSyPAI01/GLrPsme\nm+uSgr59VX3dyvDHYiOSSuMl8lkFMGthxWlKXcUb7vFcJnHRr4q5TUZ+J4wjEksw\nWmqK5me2Lnt+wVQnWXplfnknVJaZvCPEfRWVVu53lgSfTkF+rO4Bl6osw2TrIj3T\n8MoOpnGKXSTGuL86cAQAkxbJcqkFeM/ksojVBqVpGn+xdQuOf62j6mFzZl4B9wfo\nKah+O7zbgvJEHhSmvSZlo8b9YJre0YbAJBCcQnAyj3m2oSEwIKz20jjTapsiAJFS\nTwIDAQAB\n-----END PUBLIC KEY-----\n"
   },
-  "inbox": "https://social.matej-lach.me/users/MatejLach/inbox",
-  "outbox": "https://social.matej-lach.me/users/MatejLach/outbox",
-  "followers": "https://social.matej-lach.me/users/MatejLach/followers",
-  "following": "https://social.matej-lach.me/users/MatejLach/following",
-  "preferredUsername": "MatejLach",
+  "tag": [
+    {
+      "type": "Hashtag",
+      "href": "https://social.matej-lach.me/tags/golang",
+      "name": "#golang"
+    },
+    {
+      "type": "Hashtag",
+      "href": "https://social.matej-lach.me/tags/activitypub",
+      "name": "#activitypub"
+    },
+    {
+      "type": "Hashtag",
+      "href": "https://social.matej-lach.me/tags/rustlang",
+      "name": "#rustlang"
+    },
+    {
+      "type": "Hashtag",
+      "href": "https://social.matej-lach.me/tags/swiftlang",
+      "name": "#swiftlang"
+    },
+    {
+      "type": "Hashtag",
+      "href": "https://social.matej-lach.me/tags/systemd",
+      "name": "#systemd"
+    }
+  ],
+  "attachment": [],
   "endpoints": {
     "sharedInbox": "https://social.matej-lach.me/inbox"
+  },
+  "icon": {
+    "type": "Image",
+    "mediaType": "image/png",
+    "url": "https://social.matej-lach.me/system/accounts/avatars/000/000/001/original/6e9242b03795bf80.png"
+  },
+  "image": {
+    "type": "Image",
+    "mediaType": "image/png",
+    "url": "https://social.matej-lach.me/system/accounts/headers/000/000/001/original/f18240c45b0ac254.png"
   }
-}
-`,
+}`,
 	}
 
 	for idx := range want {
 		// Prepare the object to marshal first
 		person := Person{}
 		err := json.Unmarshal([]byte(want[idx]), &person)
-		if err != nil {
-			t.Fatal(err)
-		}
+		require.NoError(t, err)
 		got, err := json.MarshalIndent(&person, "", "  ")
-		if err != nil {
-			t.Fatal(err)
-		}
-		if string(got) != strings.TrimSpace(want[idx]) {
-			t.Fatalf("marshaled Actor JSON not as expected, wanted '%s', got '%s'", strings.TrimSpace(want[idx]), string(got))
-		}
+		require.NoError(t, err)
+
+		assert.JSONEq(t, want[idx], string(got))
 	}
 }

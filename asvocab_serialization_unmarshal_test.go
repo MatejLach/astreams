@@ -6,6 +6,9 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestUnmarshalJSON_ObjectOrLink(t *testing.T) {
@@ -51,9 +54,7 @@ func TestUnmarshalJSON_ObjectOrLink(t *testing.T) {
 
 	for _, tc := range testCases {
 		err = json.Unmarshal([]byte(tc), &obj)
-		if err != nil {
-			t.Fatal(err)
-		}
+		require.NoError(t, err)
 	}
 }
 
@@ -87,9 +88,7 @@ func TestUnmarshalJSON_OrderedCollectionPage(t *testing.T) {
 
 	for _, tc := range testCases {
 		err = json.Unmarshal([]byte(tc), &ordColPage)
-		if err != nil {
-			t.Fatal(err)
-		}
+		require.NoError(t, err)
 	}
 }
 
@@ -316,39 +315,26 @@ func TestUnmarshalJSON_ObjectOrLinkOrString(t *testing.T) {
 
 	for _, tc := range testCases {
 		payloadMeta, err := DecodePayloadObjectType(strings.NewReader(tc))
-		if err != nil {
-			t.Fatal(err)
-		}
+		require.NoError(t, err)
 
 		switch payloadMeta.Type {
 		case "Note":
 			var note Note
 			err = json.Unmarshal([]byte(tc), &note)
-			if err != nil {
-				t.Fatal(err)
-			}
+			require.NoError(t, err)
 		case "Offer":
 			var offer Offer
 			err = json.Unmarshal([]byte(tc), &offer)
-			if err != nil {
-				t.Fatal(err)
-			}
+			require.NoError(t, err)
 		case "Person":
 			var person Person
 			err = json.Unmarshal([]byte(tc), &person)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			if person.Name == "" {
-				t.Fatal(err)
-			}
+			require.NoError(t, err)
+			require.NotEmpty(t, person.Name)
 		default:
 			var obj ObjectOrLinkOrString
 			err = json.Unmarshal([]byte(tc), &obj)
-			if err != nil {
-				t.Fatal(err)
-			}
+			require.NoError(t, err)
 		}
 	}
 }
@@ -369,9 +355,7 @@ func TestUnmarshalJSON_Link(t *testing.T) {
 
 	for _, tc := range testCases {
 		err = json.Unmarshal([]byte(tc), &lnk)
-		if err != nil {
-			t.Fatal(err)
-		}
+		require.NoError(t, err)
 	}
 }
 
@@ -470,13 +454,9 @@ func TestOrderedCollection_Sorting(t *testing.T) {
 `
 	oc := OrderedCollection{}
 	err := json.Unmarshal([]byte(payload), &oc)
-	if err != nil {
-		t.Fatalf("Failed Unmarshaling an OrderedCollection: %s", err)
-	}
+	require.NoError(t, err)
 
 	sort.Sort(oc)
 	mostRecentPostPublishedAt := oc.OrderedItems.Target[0].GetObject().Published.Format(time.RFC3339)
-	if mostRecentPostPublishedAt != "2024-08-15T09:23:47Z" {
-		t.Fatalf("Expected %s to be the first published date in a sorted collection, but got: %s", "2024-08-15 09:23:47 +0000 UTC", mostRecentPostPublishedAt)
-	}
+	assert.Equal(t, "2024-08-15T09:23:47Z", mostRecentPostPublishedAt)
 }

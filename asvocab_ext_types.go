@@ -13,8 +13,9 @@ type Video = Document
 
 type Image struct {
 	Document
-	Width  int `json:"width,omitempty"`
+
 	Height int `json:"height,omitempty"`
+	Width  int `json:"width,omitempty"`
 }
 
 type Event = Object
@@ -32,33 +33,30 @@ type PropertyValue = Link
 
 type Place struct {
 	Location
+
 	Accuracy float32 `json:"accuracy,omitempty"`
 	Radius   float32 `json:"radius,omitempty"`
 }
 
 type Profile struct {
 	Object
+
 	Describes ObjectOrLinkOrString `json:"describes,omitempty"`
 }
 
 type Tombstone struct {
 	Object
-	FormerType string     `json:"formerType,omitempty"`
+
 	Deleted    *time.Time `json:"deleted,omitempty"`
+	FormerType string     `json:"formerType,omitempty"`
 }
 
 type Relationship struct {
 	Object
-	Subject            *ObjectOrLinkOrString `json:"subject,omitempty"`
-	Relationship       string                `json:"relationship,omitempty"`
-	RelationshipObject *ObjectOrLinkOrString `json:"object"`
-}
 
-type PublicKey struct {
-	Object
-	ID           string `json:"id"`
-	Owner        string `json:"owner"`
-	PublicKeyPem string `json:"publicKeyPem"`
+	Relationship       string                `json:"relationship,omitempty"`
+	RelationshipObject *ObjectOrLinkOrString `json:"object,omitempty"`
+	Subject            *ObjectOrLinkOrString `json:"subject,omitempty"`
 }
 
 // Extended 'Actor' types
@@ -111,10 +109,11 @@ type Move = Activity
 
 type Question struct {
 	IntransitiveActivity
+
 	// only OneOf or AnyOf can be set, not both
-	OneOf  *ObjectOrLinkOrString `json:"oneOf,omitempty"`
 	AnyOf  *ObjectOrLinkOrString `json:"anyOf,omitempty"`
 	Closed *time.Time            `json:"closed,omitempty"`
+	OneOf  *ObjectOrLinkOrString `json:"oneOf,omitempty"`
 }
 
 type Reject = Activity

@@ -14,7 +14,7 @@ type JsonPayload struct {
 type ActivityStreamer interface {
 	Object | Link | Actor | Activity | IntransitiveActivity | Collection | CollectionPage |
 		OrderedCollection | OrderedCollectionPage | Location | Icon | Image | Place | Profile |
-		Tombstone | Relationship | PublicKey | Question
+		Tombstone | Relationship | Question
 }
 
 // DecodePayloadObjectType can be used to check the specific type of unknown JSON payload

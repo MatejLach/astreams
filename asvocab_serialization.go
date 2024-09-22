@@ -83,7 +83,6 @@ func (ics *Icons) UnmarshalJSON(data []byte) error {
 			}
 			if bytes.HasPrefix(bytes.TrimSpace(bts), []byte{'{'}) {
 				decoder := json.NewDecoder(bytes.NewReader(bts))
-				decoder.DisallowUnknownFields()
 				icon := Icon{}
 				if err := decoder.Decode(&icon); err != nil {
 					return err
@@ -93,7 +92,6 @@ func (ics *Icons) UnmarshalJSON(data []byte) error {
 		}
 	} else if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'{'}) {
 		decoder := json.NewDecoder(bytes.NewReader(data))
-		decoder.DisallowUnknownFields()
 		icon := Icon{}
 		if err := decoder.Decode(&icon); err != nil {
 			return err
@@ -230,7 +228,6 @@ func (enp *EndpointsOrString) UnmarshalJSON(data []byte) error {
 		}
 	} else if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'{'}) {
 		decoder := json.NewDecoder(bytes.NewReader(data))
-		decoder.DisallowUnknownFields()
 		if err := decoder.Decode(&enp.Endpoints); err != nil {
 			return err
 		}

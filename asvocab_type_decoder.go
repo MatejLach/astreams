@@ -9,7 +9,6 @@ import (
 // Decode the supplied JSON into the appropriate type based on its "type" property
 func decodeASType(data []byte, jsonType string) (ObjectLinker, error) {
 	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
 	switch jsonType {
 	case "Activity":
 		activity := Activity{}

@@ -147,22 +147,22 @@ type Icon struct {
 type Actor struct {
 	Object
 
-	Devices                   *StringWithCollection            `json:"devices,omitempty"`
-	Discoverable              *bool                            `json:"discoverable,omitempty"`
-	EndpointsOrURI            *EndpointsOrString               `json:"endpoints,omitempty"`
-	Featured                  *StringWithOrderedCollection     `json:"featured,omitempty"`
-	FeaturedTags              *StringWithCollection            `json:"featuredTags,omitempty"`
-	Followers                 *StringWithOrderedCollectionPage `json:"followers,omitempty"`
-	Following                 *StringWithOrderedCollectionPage `json:"following,omitempty"`
-	Inbox                     *StringWithOrderedCollectionPage `json:"inbox,omitempty"`
-	Indexable                 *bool                            `json:"indexable,omitempty"`
-	Liked                     *StringWithOrderedCollectionPage `json:"liked,omitempty"`
-	ManuallyApprovesFollowers *bool                            `json:"manuallyApprovesFollowers,omitempty"`
-	Memorial                  *bool                            `json:"memorial,omitempty"`
-	Outbox                    *StringWithOrderedCollectionPage `json:"outbox,omitempty"`
-	PreferredUsername         string                           `json:"preferredUsername,omitempty"`
-	PublicKey                 *PublicKey                       `json:"publicKey,omitempty"`
-	Streams                   *ObjectOrLinkOrString            `json:"streams,omitempty"`
+	Devices                   *StringWithCollection        `json:"devices,omitempty"`
+	Discoverable              *bool                        `json:"discoverable,omitempty"`
+	EndpointsOrURI            *EndpointsOrString           `json:"endpoints,omitempty"`
+	Featured                  *StringWithOrderedCollection `json:"featured,omitempty"`
+	FeaturedTags              *StringWithCollection        `json:"featuredTags,omitempty"`
+	Followers                 *StringWithOrderedCollection `json:"followers,omitempty"`
+	Following                 *StringWithOrderedCollection `json:"following,omitempty"`
+	Inbox                     *StringWithOrderedCollection `json:"inbox,omitempty"`
+	Indexable                 *bool                        `json:"indexable,omitempty"`
+	Liked                     *StringWithOrderedCollection `json:"liked,omitempty"`
+	ManuallyApprovesFollowers *bool                        `json:"manuallyApprovesFollowers,omitempty"`
+	Memorial                  *bool                        `json:"memorial,omitempty"`
+	Outbox                    *StringWithOrderedCollection `json:"outbox,omitempty"`
+	PreferredUsername         string                       `json:"preferredUsername,omitempty"`
+	PublicKey                 *PublicKey                   `json:"publicKey,omitempty"`
+	Streams                   *ObjectOrLinkOrString        `json:"streams,omitempty"`
 }
 
 type PublicKey struct {
@@ -224,11 +224,11 @@ type OrderedCollectionPage struct {
 type OrderedCollection struct {
 	Object
 
-	Current      *ObjectOrLinkOrString `json:"current,omitempty"`
-	First        *ObjectOrLinkOrString `json:"first,omitempty"`
-	Last         *ObjectOrLinkOrString `json:"last,omitempty"`
-	OrderedItems *ObjectOrLinkOrString `json:"orderedItems"`
-	TotalItems   int                   `json:"totalItems"`
+	Current      *StringWithOrderedCollectionPage `json:"current,omitempty"`
+	First        *StringWithOrderedCollectionPage `json:"first,omitempty"`
+	Last         *StringWithOrderedCollectionPage `json:"last,omitempty"`
+	OrderedItems *ObjectOrLinkOrString            `json:"orderedItems"`
+	TotalItems   int                              `json:"totalItems"`
 }
 
 func (oc OrderedCollection) Len() int {

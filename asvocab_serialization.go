@@ -458,10 +458,10 @@ func (oc *OrderedCollection) MarshalJSON() ([]byte, error) {
 	encodedBase = bytes.TrimSuffix(encodedBase, []byte("}"))
 
 	encodedOrderedCollection, err := json.Marshal(struct {
-		TotalItems int                   `json:"totalItems,omitempty"`
-		Current    *ObjectOrLinkOrString `json:"current,omitempty"`
-		First      *ObjectOrLinkOrString `json:"first,omitempty"`
-		Last       *ObjectOrLinkOrString `json:"last,omitempty"`
+		TotalItems int                              `json:"totalItems,omitempty"`
+		Current    *StringWithOrderedCollectionPage `json:"current,omitempty"`
+		First      *StringWithOrderedCollectionPage `json:"first,omitempty"`
+		Last       *StringWithOrderedCollectionPage `json:"last,omitempty"`
 	}{
 		TotalItems: oc.TotalItems,
 		Current:    oc.Current,

@@ -217,24 +217,6 @@ func (sc *StringWithCollection) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// Implements https://golang.org/pkg/encoding/json/#Unmarshaler
-func (enp *EndpointsOrString) UnmarshalJSON(data []byte) error {
-	if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'"'}) {
-		if err := json.Unmarshal(data, &enp.URL); err != nil {
-			return err
-		}
-		if _, err := url.ParseRequestURI(enp.URL); err != nil {
-			return err
-		}
-	} else if bytes.HasPrefix(bytes.TrimSpace(data), []byte{'{'}) {
-		decoder := json.NewDecoder(bytes.NewReader(data))
-		if err := decoder.Decode(&enp.Endpoints); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 // Implements https://golang.org/pkg/encoding/json/#Marshal
 func (ol *ObjectOrLink) MarshalJSON() ([]byte, error) {
 	if len(*ol) > 0 {
@@ -384,10 +366,10 @@ func (col *Collection) MarshalJSON() ([]byte, error) {
 	encodedBase = bytes.TrimSuffix(encodedBase, []byte("}"))
 
 	encodedCollection, err := json.Marshal(struct {
-		TotalItems int                   `json:"totalItems,omitempty"`
-		Current    *ObjectOrLinkOrString `json:"current,omitempty"`
-		First      *ObjectOrLinkOrString `json:"first,omitempty"`
-		Last       *ObjectOrLinkOrString `json:"last,omitempty"`
+		TotalItems int                       `json:"totalItems,omitempty"`
+		Current    *StringWithCollectionPage `json:"current,omitempty"`
+		First      *StringWithCollectionPage `json:"first,omitempty"`
+		Last       *StringWithCollectionPage `json:"last,omitempty"`
 	}{
 		TotalItems: col.TotalItems,
 		Current:    col.Current,
@@ -614,24 +596,6 @@ func (sc *StringWithCollection) MarshalJSON() ([]byte, error) {
 	return []byte{}, errors.New("unrecognised content, cannot Marshal StringWithCollection, use nil for empty value")
 }
 
-// Implements https://golang.org/pkg/encoding/json/#Marshal
-func (enp *EndpointsOrString) MarshalJSON() ([]byte, error) {
-	if len(enp.URL) > 0 {
-		jsonb, err := json.Marshal(enp.URL)
-		if err != nil {
-			return []byte{}, err
-		}
-		return jsonb, nil
-	} else if !((Endpoint{}) == enp.Endpoints) {
-		jsonb, err := json.Marshal(enp.Endpoints)
-		if err != nil {
-			return []byte{}, err
-		}
-		return jsonb, nil
-	}
-	return []byte{}, errors.New("unrecognised content, cannot Marshal EndpointsOrString, use nil for empty value")
-}
-
 // DecodeJSON is the generic unmarshaller for any valid ActivityStreams 2.0 object
 func DecodeJSON[T ActivityStreamer](jsonPayload io.Reader) (T, error) {
 	var result T
@@ -677,9 +641,4 @@ func (soc *StringWithOrderedCollection) String() string {
 // Implements https://golang.org/pkg/fmt/#Stringer
 func (sc *StringWithCollection) String() string {
 	return fmt.Sprintf("%+v", *sc)
-}
-
-// Implements https://golang.org/pkg/fmt/#Stringer
-func (enp *EndpointsOrString) String() string {
-	return fmt.Sprintf("%+v", *enp)
 }

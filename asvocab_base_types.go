@@ -45,11 +45,6 @@ type Icons struct {
 	URL   string
 }
 
-type EndpointsOrString struct {
-	Endpoints Endpoint
-	URL       string
-}
-
 // https://www.w3.org/TR/activitystreams-vocabulary
 
 // Object represents the base ActivityStreams Object and all of its properties
@@ -128,7 +123,7 @@ type Location struct {
 	Units     string  `json:"units,omitempty"`
 }
 
-type Endpoint struct {
+type Endpoints struct {
 	OauthAuthorizationEndpoint string                       `json:"oauthAuthorizationEndpoint,omitempty"`
 	OauthTokenEndpoint         string                       `json:"oauthTokenEndpoint,omitempty"`
 	ProvideClientKey           string                       `json:"provideClientKey,omitempty"`
@@ -149,7 +144,7 @@ type Actor struct {
 
 	Devices                   *StringWithCollection        `json:"devices,omitempty"`
 	Discoverable              *bool                        `json:"discoverable,omitempty"`
-	EndpointsOrURI            *EndpointsOrString           `json:"endpoints,omitempty"`
+	Endpoints                 *Endpoints                   `json:"endpoints,omitempty"`
 	Featured                  *StringWithOrderedCollection `json:"featured,omitempty"`
 	FeaturedTags              *StringWithCollection        `json:"featuredTags,omitempty"`
 	Followers                 *StringWithOrderedCollection `json:"followers,omitempty"`
@@ -203,11 +198,11 @@ type CollectionPage struct {
 type Collection struct {
 	Object
 
-	Current    *ObjectOrLinkOrString `json:"current,omitempty"`
-	First      *ObjectOrLinkOrString `json:"first,omitempty"`
-	Items      *ObjectOrLinkOrString `json:"items,omitempty"`
-	Last       *ObjectOrLinkOrString `json:"last,omitempty"`
-	TotalItems int                   `json:"totalItems,omitempty"`
+	Current    *StringWithCollectionPage `json:"current,omitempty"`
+	First      *StringWithCollectionPage `json:"first,omitempty"`
+	Items      *ObjectOrLinkOrString     `json:"items,omitempty"`
+	Last       *StringWithCollectionPage `json:"last,omitempty"`
+	TotalItems int                       `json:"totalItems,omitempty"`
 }
 
 // OrderedCollectionPage implements https://golang.org/pkg/sort/#Interface

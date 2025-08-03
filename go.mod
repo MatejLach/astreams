@@ -2,7 +2,7 @@ module github.com/MatejLach/astreams
 
 go 1.18
 
-require github.com/stretchr/testify v1.9.0
+require github.com/stretchr/testify v1.10.0
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -11,7 +11,7 @@ require (
 )
 
 retract (
-    v0.8.0 // experiments, not fit for consumption
-    v0.9.0 // experiments, not fit for consumption
-    v0.15.0 // published prematurely
+	v0.15.0 // published prematurely
+	v0.9.0 // experiments, not fit for consumption
+	v0.8.0 // experiments, not fit for consumption
 )

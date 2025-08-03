@@ -10,4 +10,8 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-retract [v0.8.0, v0.9.0] // experiments, not fit for consumption
+retract (
+    v0.8.0 // experiments, not fit for consumption
+    v0.9.0 // experiments, not fit for consumption
+    v0.15.0 // published prematurely
+)

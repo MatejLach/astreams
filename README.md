@@ -14,9 +14,8 @@ package main
 import (
     "encoding/json"
     "fmt"
-    "strings"
 
-    "your-module/astreams"
+    "github.com/MatejLach/astreams"
 )
 
 func main() {
@@ -35,12 +34,12 @@ func main() {
 
     fmt.Printf("Note content: %s\n", note.Content)
 
-    // Encode back to JSON
-    encoded, err := json.Marshal(&note)
+    // Encode it back to JSON
+    encodedNote, err := json.Marshal(&note)
     if err != nil {
         panic(err)
     }
-    fmt.Println(string(encoded))
+    fmt.Println(string(encodedNote))
 }
 ```
 
